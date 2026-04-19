@@ -12,5 +12,15 @@ Creación de pagina web de una aerolínea, donde se puede reservar, comprar, con
   Run `npm i` to install the dependencies.
 
   Run `npm run dev` to start the development server.
+  Seleccionar el linck http://localhost:5173/ para iniciar la pagina de la aerolinea
   
 >>>>>>> c42fb60 (Diseño de AEROTURS)
+
+# Versión 1 Aeroturs
+
+Creacion de la parte visual
+-reserva de vuelo (creacion de las reservas)
+-registro (solo se creo el espacio)
+-estado de vuelo (solo se creo el espacio)
+-mis reservas (se veran las reservas realizadas)
+en la pagina principal se crearon diferentes espacios de informacion (precios, destinos populares, etc).
