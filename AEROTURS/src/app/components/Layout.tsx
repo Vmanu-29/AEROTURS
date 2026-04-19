@@ -26,7 +26,7 @@ export function Layout() {
               <h4 className="font-bold mb-4">Servicios</h4>
               <ul className="space-y-2 text-sm text-white/70">
                 <li><a href="#" className="hover:text-white transition-colors">Reservar vuelos</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Check-in online</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Registro online</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Estado del vuelo</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Gestionar reserva</a></li>
               </ul>

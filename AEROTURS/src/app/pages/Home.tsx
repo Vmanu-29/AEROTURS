@@ -79,8 +79,8 @@ export function Home() {
               <div className="bg-blue-100 w-14 h-14 rounded-full flex items-center justify-center mb-4">
                 <Clock className="w-7 h-7 text-blue-600" />
               </div>
-              <h3 className="font-bold text-lg mb-2">Check-in</h3>
-              <p className="text-gray-600 text-sm">Realiza tu check-in online y ahorra tiempo en el aeropuerto</p>
+              <h3 className="font-bold text-lg mb-2">Registro</h3>
+              <p className="text-gray-600 text-sm">Crea tu cuenta y accede a beneficios exclusivos</p>
             </div>
             <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow cursor-pointer">
               <div className="bg-blue-100 w-14 h-14 rounded-full flex items-center justify-center mb-4">

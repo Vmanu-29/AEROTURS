@@ -154,7 +154,7 @@ export function Confirmation() {
             </li>
             <li className="flex items-start gap-2">
               <CheckCircle2 className="h-4 w-4 text-white mt-0.5 flex-shrink-0" />
-              <span className="text-white/95">Realiza el check-in online 24 horas antes del vuelo</span>
+              <span className="text-white/95">Realiza el registro online 24 horas antes del vuelo</span>
             </li>
             <li className="flex items-start gap-2">
               <CheckCircle2 className="h-4 w-4 text-white mt-0.5 flex-shrink-0" />
