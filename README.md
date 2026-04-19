@@ -24,3 +24,7 @@ Creacion de la parte visual
 -estado de vuelo (solo se creo el espacio)
 -mis reservas (se veran las reservas realizadas)
 en la pagina principal se crearon diferentes espacios de informacion (precios, destinos populares, etc).
+
+# Version 2 Aeroturs
+
+Incorporación de precios con mas destinos, informacion general, selección de clase de vuelo (economico, negocio, primera clase) tambien se incorporo informacion de la aerolinea
