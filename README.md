@@ -28,3 +28,11 @@ en la pagina principal se crearon diferentes espacios de informacion (precios, d
 # Version 2 Aeroturs
 
 Incorporación de precios con mas destinos, informacion general, selección de clase de vuelo (economico, negocio, primera clase) tambien se incorporo informacion de la aerolinea
+
+Analisis de casos de us para modificacion del proyecto
+
+reoganización de elementos de la pagina
+
+funcionalidad de pestañas de pagina 
+
+analisis de incorporacion de inicio de seccion
