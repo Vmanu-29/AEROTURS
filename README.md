@@ -25,6 +25,11 @@ Creacion de la parte visual
 -mis reservas (se veran las reservas realizadas)
 en la pagina principal se crearon diferentes espacios de informacion (precios, destinos populares, etc).
 
+# Configuración Inicial y Documentación
+feat: inicializar repositorio con estructura de carpetas MVC 
+docs: agregar documentación de casos de uso y diagramas de secuencia 
+docs: agregar diagrama de clases y modelo entidad-relación 
+
 # Version 2 Aeroturs
 
 Incorporación de precios con mas destinos, informacion general, selección de clase de vuelo (economico, negocio, primera clase) tambien se incorporo informacion de la aerolinea
