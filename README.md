@@ -41,3 +41,39 @@ reoganización de elementos de la pagina
 funcionalidad de pestañas de pagina 
 
 analisis de incorporacion de inicio de seccion
+
+
+# Autenticación y usuarios
+feat: implementar sistema de registro de usuarios con validación de datos
+
+feat: implementar inicio de sesión (login) con autenticación básica
+
+feat: agregar control de acceso por roles (admin, agente, cliente)
+
+fix: corregir validación de campos en formulario de registro
+
+# Base de datos y backend
+feat: conectar aplicación con base de datos PostgreSQL
+
+feat: crear modelo de clientes con operaciones CRUD
+
+feat: crear modelo de vuelos con operaciones CRUD
+
+feat: implementar modelo de reservas y relación con clientes y vuelos
+
+feat: crear modelo de tiquetes con selección de clase y asiento
+
+feat: agregar modelo de paquetes turísticos
+
+# Funcionalidad de reservas
+feat: implementar flujo completo de reserva de vuelos
+
+feat: calcular precio total de reserva según clase y destino
+
+feat: permitir selección de asientos en la reserva
+
+feat: asociar múltiples tiquetes a una reserva
+
+fix: corregir error en cálculo de precios de reserva
+
+
