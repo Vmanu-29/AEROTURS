@@ -72,8 +72,32 @@ feat: calcular precio total de reserva según clase y destino
 
 feat: permitir selección de asientos en la reserva
 
+
+# Seguridad y mejoras
+
+feat: encriptar contraseñas de usuarios
+
+feat: validar sesiones activas
+
+fix: corregir vulnerabilidad en autenticación
+
+refactor: optimizar consultas a base de datos
+
 feat: asociar múltiples tiquetes a una reserva
 
 fix: corregir error en cálculo de precios de reserva
+
+
+# Reportes y consultas
+
+feat: generar reporte de reservas por vuelo
+
+feat: implementar consulta de clientes frecuentes
+
+feat: agregar reporte de ingresos por destino
+
+feat: mostrar historial de estados de reservas
+
+
 
 
