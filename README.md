@@ -97,3 +97,5 @@ feat: mostrar historial de estados de reservas
 
 docs: actualizar manual de usuario
 
+docs: agregar manual de instalación del sistema
+
