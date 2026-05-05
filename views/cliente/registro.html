@@ -1,0 +1,55 @@
+<div class="container my-5">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Registro de Nuevo Cliente</h4>
+        </div>
+        <div class="card-body">
+            <form id="formRegistroCliente" class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Número de Identificación</label>
+                    <input type="text" class="form-control" required placeholder="Cédula o Pasaporte">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Nombres y Apellidos</label>
+                    <input type="text" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Correo Electrónico</label>
+                    <input type="email" class="form-control" required>
+                </div>
+                
+                <div class="col-md-4">
+                    <label class="form-label">País</label>
+                    <select class="form-select" id="selectPais">
+                        <option selected disabled>Seleccione...</option>
+                        </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Departamento</label>
+                    <select class="form-select" id="selectDepto">
+                        <option selected disabled>Seleccione...</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Ciudad</label>
+                    <select class="form-select" id="selectCiudad">
+                        <option selected disabled>Seleccione...</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Teléfono Principal</label>
+                    <input type="tel" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Teléfono Alterno</label>
+                    <input type="tel" class="form-control">
+                </div>
+
+                <div class="col-12 text-end">
+                    <button type="submit" class="btn btn-success">Registrar Cliente</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
