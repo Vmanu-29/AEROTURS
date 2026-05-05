@@ -97,3 +97,5 @@ feat: mostrar historial de estados de reservas
 feat: encriptar contraseñas de usuarios
 
 feat: validar sesiones activas
+
+fix: corregir vulnerabilidad en autenticación
