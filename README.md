@@ -93,9 +93,7 @@ feat: agregar reporte de ingresos por destino
 
 feat: mostrar historial de estados de reservas
 
-# Seguridad y mejoras
-feat: encriptar contraseñas de usuarios
+# Documentación
 
-feat: validar sesiones activas
+docs: actualizar manual de usuario
 
-fix: corregir vulnerabilidad en autenticación
