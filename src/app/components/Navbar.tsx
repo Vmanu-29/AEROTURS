@@ -1,9 +1,48 @@
-import { Link, useLocation } from 'react-router';
-import { Plane, User, Ticket, Menu } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router';
+import { Lock, LogOut, Menu, Plane, Ticket, User } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { Button } from './ui/button';
+import { getAuthUser, logout } from '../utils/auth';
 
 export function Navbar() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const [user, setUser] = useState(() => getAuthUser());
+
+  useEffect(() => {
+    setUser(getAuthUser());
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const syncAuth = () => setUser(getAuthUser());
+
+    window.addEventListener('storage', syncAuth);
+    window.addEventListener('aeroturs-auth-change', syncAuth);
+
+    return () => {
+      window.removeEventListener('storage', syncAuth);
+      window.removeEventListener('aeroturs-auth-change', syncAuth);
+    };
+  }, []);
+
+  const isLoggedIn = Boolean(user);
+
+  const protectedLinkClass = (path: string) =>
+    `transition-colors font-medium flex items-center gap-1.5 ${
+      location.pathname === path
+        ? 'text-blue-600 border-b-2 border-blue-600 pb-1'
+        : isLoggedIn
+          ? 'text-gray-700 hover:text-blue-600'
+          : 'text-gray-400 hover:text-blue-600'
+    }`;
+
+  const protectedLinkState = (path: string) =>
+    isLoggedIn ? undefined : { from: path };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   return (
     <nav className="bg-white sticky top-0 z-50 shadow-md border-b border-gray-200">
@@ -39,36 +78,20 @@ export function Navbar() {
             </Link>
 
             <Link
-              to="/registro"
-              className={`hover:text-blue-600 transition-colors font-medium ${
-                location.pathname === '/registro'
-                  ? 'text-blue-600 border-b-2 border-blue-600 pb-1'
-                  : 'text-gray-700'
-              }`}
+              to={isLoggedIn ? '/estado-vuelo' : '/login'}
+              state={protectedLinkState('/estado-vuelo')}
+              className={protectedLinkClass('/estado-vuelo')}
             >
-              Registro
-            </Link>
-
-            <Link
-              to="/estado-vuelo"
-              className={`hover:text-blue-600 transition-colors font-medium ${
-                location.pathname === '/estado-vuelo'
-                  ? 'text-blue-600 border-b-2 border-blue-600 pb-1'
-                  : 'text-gray-700'
-              }`}
-            >
+              {!isLoggedIn && <Lock className="h-3.5 w-3.5" />}
               Estado del vuelo
             </Link>
 
             <Link
-              to="/my-bookings"
-              className={`hover:text-blue-600 transition-colors flex items-center gap-1.5 font-medium ${
-                location.pathname === '/my-bookings'
-                  ? 'text-blue-600 border-b-2 border-blue-600 pb-1'
-                  : 'text-gray-700'
-              }`}
+              to={isLoggedIn ? '/my-bookings' : '/login'}
+              state={protectedLinkState('/my-bookings')}
+              className={protectedLinkClass('/my-bookings')}
             >
-              <Ticket className="h-4 w-4" />
+              {isLoggedIn ? <Ticket className="h-4 w-4" /> : <Lock className="h-3.5 w-3.5" />}
               Mis Reservas
             </Link>
 
@@ -76,14 +99,30 @@ export function Navbar() {
 
           <div className="flex items-center gap-3">
 
-            <Button
-              variant="outline"
-              size="sm"
-              className="hidden md:flex border-blue-600 text-blue-600 hover:bg-blue-50 rounded-full"
-            >
-              <User className="h-4 w-4 mr-2" />
-              Iniciar Sesión
-            </Button>
+            {isLoggedIn ? (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={handleLogout}
+                className="hidden md:flex border-blue-600 text-blue-600 hover:bg-blue-50 rounded-full"
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Cerrar Sesión
+              </Button>
+            ) : (
+              <Button
+                asChild
+                variant="outline"
+                size="sm"
+                className="hidden md:flex border-blue-600 text-blue-600 hover:bg-blue-50 rounded-full"
+              >
+                <Link to="/login">
+                  <User className="h-4 w-4 mr-2" />
+                  Iniciar Sesión
+                </Link>
+              </Button>
+            )}
 
             <Button
               variant="ghost"
