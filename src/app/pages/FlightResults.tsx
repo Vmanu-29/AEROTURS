@@ -7,28 +7,46 @@ import { Badge } from '../components/ui/badge';
 import { mockFlights, destinations } from '../data/mockFlights';
 import { Flight } from '../types/flight';
 import { formatPrice } from '../utils/formatPrice';
+import { applyFlightClassPricing, flightClassDetails, FlightClass } from '../utils/flightClassPricing';
+import { getAuthUser } from '../utils/auth';
 
 export function FlightResults() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [selectedFlight, setSelectedFlight] = useState<Flight | null>(null);
+  const [bookingError, setBookingError] = useState('');
 
   const from = searchParams.get('from') || '';
   const to = searchParams.get('to') || '';
   const departureDate = searchParams.get('departureDate') || '';
   const passengers = searchParams.get('passengers') || '1';
   const tripType = searchParams.get('tripType') || 'one-way';
+  const flightClass = (searchParams.get('flightClass') || 'economy') as FlightClass;
+  const selectedClassDetails = flightClassDetails[flightClass] || flightClassDetails.economy;
 
   const fromCity = destinations.find(d => d.code === from)?.city || from;
   const toCity = destinations.find(d => d.code === to)?.city || to;
 
   const availableFlights = useMemo(() => {
-    return mockFlights.filter(flight => 
-      flight.origin === from && flight.destination === to
-    );
-  }, [from, to]);
+    const routeFlights = from && to
+      ? mockFlights.filter(flight => flight.origin === from && flight.destination === to)
+      : mockFlights;
+
+    return routeFlights.map((flight) => applyFlightClassPricing(flight, flightClass));
+  }, [flightClass, from, to]);
 
   const handleSelectFlight = (flight: Flight) => {
+    setBookingError('');
+
+    if (flight.class === 'business') {
+      const user = getAuthUser();
+
+      if (!user || user.tipo_cuenta !== 'empresa') {
+        setBookingError('La clase Business solo está disponible para cuentas empresariales. Inicia sesión con una cuenta de empresa o crea una cuenta empresarial para continuar.');
+        return;
+      }
+    }
+
     setSelectedFlight(flight);
     // Guardar datos del vuelo en sessionStorage para los siguientes pasos
     sessionStorage.setItem('selectedFlight', JSON.stringify({
@@ -66,17 +84,27 @@ export function FlightResults() {
         <div className="mb-6">
           <h1 className="text-3xl font-bold mb-2 text-gray-900">Vuelos disponibles</h1>
           <div className="flex items-center gap-2 text-gray-600">
-            <span>{fromCity}</span>
-            <ArrowRight className="h-4 w-4" />
-            <span>{toCity}</span>
-            <span className="ml-4">•</span>
-            <Calendar className="h-4 w-4 ml-4" />
-            <span>{new Date(departureDate).toLocaleDateString('es-ES', { 
-              weekday: 'long', 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
-            })}</span>
+            {from && to ? (
+              <>
+                <span>{fromCity}</span>
+                <ArrowRight className="h-4 w-4" />
+                <span>{toCity}</span>
+              </>
+            ) : (
+              <span>Todas las rutas disponibles</span>
+            )}
+            {departureDate && (
+              <>
+                <span className="ml-4">•</span>
+                <Calendar className="h-4 w-4 ml-4" />
+                <span>{new Date(departureDate).toLocaleDateString('es-ES', { 
+                  weekday: 'long', 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric' 
+                })}</span>
+              </>
+            )}
             <span className="ml-4">•</span>
             <span className="ml-4">{passengers} {parseInt(passengers) === 1 ? 'pasajero' : 'pasajeros'}</span>
           </div>
@@ -84,13 +112,33 @@ export function FlightResults() {
 
         {/* Filters */}
         <div className="bg-white rounded-xl shadow p-4 mb-6">
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <span className="text-sm text-gray-600">
               {availableFlights.length} vuelos encontrados
             </span>
-            <Badge variant="secondary" className="bg-blue-100 text-blue-700">Ordenar por: Precio más bajo</Badge>
+            <div className="flex flex-wrap gap-2">
+              <Badge variant="secondary" className="bg-blue-100 text-blue-700">
+                Clase: {selectedClassDetails.label}
+              </Badge>
+              <Badge variant="secondary" className="bg-emerald-100 text-emerald-700">
+                {selectedClassDetails.priceNote}
+              </Badge>
+              <Badge variant="secondary" className="bg-gray-100 text-gray-700">
+                Ordenar por: Precio más bajo
+              </Badge>
+            </div>
           </div>
         </div>
+
+        <div className="mb-6 rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm text-blue-950">
+          <strong>Diferencia de clase:</strong> Económica mantiene el precio base, Business aplica un 10% de descuento empresarial y solo está disponible para cuentas de empresa. Primera clase aumenta el precio un 25% por sus servicios premium.
+        </div>
+
+        {bookingError && (
+          <div role="alert" aria-live="polite" className="mb-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm font-medium text-amber-800">
+            {bookingError}
+          </div>
+        )}
 
         {/* Flight List */}
         <div className="space-y-4">
@@ -138,8 +186,10 @@ export function FlightResults() {
                       {flight.availableSeats} asientos disponibles
                     </Badge>
                     <Badge variant="secondary" className="bg-blue-100 text-blue-700">
-                      {flight.class === 'economy' ? 'Económica' : 
-                       flight.class === 'business' ? 'Business' : 'Primera clase'}
+                      {flightClassDetails[flight.class].label}
+                    </Badge>
+                    <Badge variant="secondary" className="bg-emerald-100 text-emerald-700">
+                      {flightClassDetails[flight.class].priceNote}
                     </Badge>
                   </div>
                 </div>

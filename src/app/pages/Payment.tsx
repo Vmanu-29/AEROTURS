@@ -7,6 +7,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Card } from '../components/ui/card';
 import { RadioGroup, RadioGroupItem } from '../components/ui/radio-group';
+import { addStoredBooking } from '../utils/bookings';
 
 export function Payment() {
   const navigate = useNavigate();
@@ -51,12 +52,11 @@ export function Payment() {
       passengers,
       totalPrice: bookingData.flight.price * bookingData.passengers,
       bookingDate: new Date().toISOString(),
-      status: 'confirmed'
+      status: 'paid',
+      paymentStatus: 'paid'
     };
 
-    const existingBookings = JSON.parse(sessionStorage.getItem('myBookings') || '[]');
-    existingBookings.push(booking);
-    sessionStorage.setItem('myBookings', JSON.stringify(existingBookings));
+    addStoredBooking(booking);
 
     // Limpiar datos temporales
     sessionStorage.removeItem('selectedFlight');

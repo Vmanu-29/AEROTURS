@@ -9,6 +9,7 @@ import { PassengerInfo } from './pages/PassengerInfo';
 import { Payment } from './pages/Payment';
 import { Confirmation } from './pages/Confirmation';
 import { MyBookings } from './pages/MyBookings';
+import { AdminDashboard } from './pages/AdminDashboard';
 
 import { Registro } from './pages/Registro';
 import EstadoVuelo from './pages/EstadoVuelo';
@@ -40,6 +41,10 @@ export const router = createBrowserRouter([
       {
         path: 'my-bookings',
         element: protectedElement(MyBookings),
+      },
+      {
+        path: 'admin',
+        element: protectedElement(AdminDashboard),
       },
       { path: 'login', Component: Login },
       { path: 'registro', Component: Registro },

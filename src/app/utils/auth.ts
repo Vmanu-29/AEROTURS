@@ -7,6 +7,7 @@ export type AuthUser = {
   nombre: string;
   rol: string;
   id_rol: number;
+  tipo_cuenta: 'persona' | 'empresa';
 };
 
 type StoredUser = AuthUser & {
@@ -29,6 +30,7 @@ const defaultUsers: StoredUser[] = [
     nombre: 'Administrador',
     rol: 'Super Administrador',
     id_rol: 1,
+    tipo_cuenta: 'persona',
   },
   {
     id_usuario: 2,
@@ -37,6 +39,7 @@ const defaultUsers: StoredUser[] = [
     nombre: 'Agente AEROTURS',
     rol: 'Agente de Aerolinea',
     id_rol: 2,
+    tipo_cuenta: 'persona',
   },
   {
     id_usuario: 3,
@@ -45,6 +48,16 @@ const defaultUsers: StoredUser[] = [
     nombre: 'Cliente Demo',
     rol: 'Cliente',
     id_rol: 3,
+    tipo_cuenta: 'persona',
+  },
+  {
+    id_usuario: 4,
+    correo: 'empresa@aeroturs.com',
+    password: 'empresa123',
+    nombre: 'Empresa Demo',
+    rol: 'Cliente',
+    id_rol: 3,
+    tipo_cuenta: 'empresa',
   },
 ];
 
@@ -74,6 +87,7 @@ function createAuthUser(user: StoredUser): AuthUser {
     nombre: user.nombre,
     rol: user.rol,
     id_rol: user.id_rol,
+    tipo_cuenta: user.tipo_cuenta || 'persona',
   };
 }
 
@@ -105,6 +119,7 @@ export async function login(correo: string, password: string): Promise<AuthUser 
           nombre: data.user.nombre || data.user.correo.split('@')[0],
           rol: data.user.rol || 'Cliente',
           id_rol: data.user.id_rol,
+          tipo_cuenta: data.user.tipo_cuenta || 'persona',
         };
 
         setAuthenticatedUser(authUser);
@@ -132,6 +147,7 @@ export async function login(correo: string, password: string): Promise<AuthUser 
 export async function register(userData: {
   correo: string;
   password: string;
+  tipo_cuenta: 'persona' | 'empresa';
   tipo_documento: string;
   numero_documento: string;
   nombres: string;
@@ -182,6 +198,7 @@ export async function register(userData: {
     nombre: `${userData.nombres} ${userData.apellidos}`,
     rol: 'Cliente',
     id_rol: 3,
+    tipo_cuenta: userData.tipo_cuenta,
     tipo_documento: userData.tipo_documento,
     numero_documento: userData.numero_documento,
     ciudad: userData.ciudad,
@@ -216,4 +233,15 @@ export function isAuthenticated() {
 export function logout() {
   sessionStorage.removeItem(AUTH_STORAGE_KEY);
   window.dispatchEvent(new Event('aeroturs-auth-change'));
+}
+
+export function getCustomerAccounts() {
+  return getLocalUsers()
+    .filter((user) => user.id_rol === 3)
+    .map((user) => ({
+      id_usuario: user.id_usuario,
+      correo: user.correo,
+      nombre: user.nombre,
+      tipo_cuenta: user.tipo_cuenta || 'persona',
+    }));
 }

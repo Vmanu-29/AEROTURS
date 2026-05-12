@@ -1,9 +1,12 @@
+import { useNavigate } from 'react-router';
 import { SearchForm } from '../components/SearchForm';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
-import { Plane, Shield, Clock, Award, Globe, HeadphonesIcon, MapPin, Star, TrendingUp } from 'lucide-react';
+import { ArrowRight, Check, Plane, Shield, Clock, Award, Globe, MapPin, Star, TrendingUp } from 'lucide-react';
 import { formatPrice } from '../utils/formatPrice';
 
 export function Home() {
+  const navigate = useNavigate();
+
   const popularDestinations = [
     {
       city: 'París',
@@ -43,6 +46,37 @@ export function Home() {
     }
   ];
 
+  const flightClasses = [
+    {
+      name: 'Económica',
+      value: 'economy',
+      image: 'https://images.unsplash.com/photo-1556388158-158ea5ccacbd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
+      description: 'La mejor tarifa para viajar cómodo, ligero y con lo esencial incluido.',
+      features: ['Equipaje de mano', 'Snacks y bebidas', 'Entretenimiento a bordo'],
+      priceNote: 'Precio base',
+      buttonClass: 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+    },
+    {
+      name: 'Business',
+      value: 'business',
+      image: 'https://images.unsplash.com/photo-1581213900249-5d25f6f3ae76?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
+      description: 'Más espacio, prioridad y beneficios pensados para viajes de empresa.',
+      features: ['10% de descuento empresarial', 'Asientos reclinables 180°', 'Comida gourmet', 'Acceso a salas VIP'],
+      priceNote: '10% de descuento',
+      popular: true,
+      buttonClass: 'bg-blue-600 text-white hover:bg-blue-700'
+    },
+    {
+      name: 'Primera Clase',
+      value: 'first',
+      image: 'https://images.unsplash.com/photo-1540339832862-474599807836?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
+      description: 'Una experiencia exclusiva con privacidad, atención personalizada y lujo a bordo.',
+      features: ['25% adicional al precio base', 'Suites privadas', 'Chef a bordo', 'Servicio personalizado'],
+      priceNote: '+25% premium',
+      buttonClass: 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section compacto con formulario integrado */}
@@ -50,7 +84,7 @@ export function Home() {
         <div className="absolute inset-0 overflow-hidden">
           <ImageWithFallback
             src="https://images.unsplash.com/photo-1567019619915-138426e5b1c0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxibHVlJTIwYWlycGxhbmUlMjBmbHlpbmclMjBza3l8ZW58MXx8fHwxNzc1MzcxMTEwfDA&ixlib=rb-4.1.0&q=80&w=1080"
-            alt="Airplane flying"
+            alt="Avión de AEROTURS volando en el cielo azul"
             className="w-full h-full object-cover opacity-20"
           />
         </div>
@@ -75,34 +109,54 @@ export function Home() {
       <div className="bg-gray-50 py-16">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow cursor-pointer">
+            <button 
+              type="button"
+              className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow text-left focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+              onClick={() => navigate('/registro')}
+              aria-label="Ir a registro de pasajero"
+            >
               <div className="bg-blue-100 w-14 h-14 rounded-full flex items-center justify-center mb-4">
-                <Clock className="w-7 h-7 text-blue-600" />
+                <Clock className="w-7 h-7 text-blue-600" aria-hidden="true" />
               </div>
               <h3 className="font-bold text-lg mb-2">Registro</h3>
               <p className="text-gray-600 text-sm">Crea tu cuenta y accede a beneficios exclusivos</p>
-            </div>
-            <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow cursor-pointer">
+            </button>
+            <button 
+              type="button"
+              className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow text-left focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+              onClick={() => navigate('/estado-vuelo')}
+              aria-label="Ir a estado del vuelo"
+            >
               <div className="bg-blue-100 w-14 h-14 rounded-full flex items-center justify-center mb-4">
-                <Plane className="w-7 h-7 text-blue-600" />
+                <Plane className="w-7 h-7 text-blue-600" aria-hidden="true" />
               </div>
               <h3 className="font-bold text-lg mb-2">Estado del vuelo</h3>
               <p className="text-gray-600 text-sm">Consulta el estado en tiempo real de tu vuelo</p>
-            </div>
-            <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow cursor-pointer">
+            </button>
+            <button 
+              type="button"
+              className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow text-left focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+              onClick={() => navigate('/my-bookings')}
+              aria-label="Ir a gestionar reservas"
+            >
               <div className="bg-blue-100 w-14 h-14 rounded-full flex items-center justify-center mb-4">
-                <MapPin className="w-7 h-7 text-blue-600" />
+                <MapPin className="w-7 h-7 text-blue-600" aria-hidden="true" />
               </div>
               <h3 className="font-bold text-lg mb-2">Gestiona tu reserva</h3>
               <p className="text-gray-600 text-sm">Modifica o cancela tu reserva fácilmente</p>
-            </div>
-            <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow cursor-pointer">
+            </button>
+            <button 
+              type="button"
+              className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow text-left focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+              onClick={() => navigate('/registro')}
+              aria-label="Ir a AeroMiles"
+            >
               <div className="bg-blue-100 w-14 h-14 rounded-full flex items-center justify-center mb-4">
-                <Star className="w-7 h-7 text-blue-600" />
+                <Star className="w-7 h-7 text-blue-600" aria-hidden="true" />
               </div>
               <h3 className="font-bold text-lg mb-2">AeroMiles</h3>
               <p className="text-gray-600 text-sm">Acumula millas y disfruta beneficios exclusivos</p>
-            </div>
+            </button>
           </div>
         </div>
       </div>
@@ -118,14 +172,16 @@ export function Home() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {popularDestinations.map((dest, index) => (
-            <div
+            <button
               key={index}
-              className="group cursor-pointer rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 bg-white border border-gray-100"
+              className="group rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 bg-white border border-gray-100 text-left focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+              onClick={() => window.location.href = `/flights?destination=${dest.city}`}
+              aria-label={`Ver vuelos a ${dest.city}, ${dest.country} desde ${formatPrice(dest.price)}`}
             >
               <div className="relative h-64 overflow-hidden">
                 <ImageWithFallback
                   src={dest.image}
-                  alt={dest.city}
+                  alt={`Destino turístico: ${dest.city}, ${dest.country}. Imagen de la ciudad con precio desde ${formatPrice(dest.price)}`}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
@@ -140,12 +196,9 @@ export function Home() {
                     <p className="text-gray-600 text-sm mb-1">Desde</p>
                     <p className="text-3xl font-bold text-blue-600">{formatPrice(dest.price)}</p>
                   </div>
-                  <button className="bg-blue-600 text-white px-6 py-2.5 rounded-full hover:bg-blue-700 transition-colors text-sm font-medium shadow-lg">
-                    Ver vuelos
-                  </button>
                 </div>
               </div>
-            </div>
+            </button>
           ))}
         </div>
       </div>
@@ -193,7 +246,7 @@ export function Home() {
             <div className="relative h-[500px] rounded-2xl overflow-hidden shadow-2xl">
               <ImageWithFallback
                 src="https://images.unsplash.com/photo-1584078764256-3000191c9377?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBhaXJsaW5lJTIwaW50ZXJpb3IlMjByZWQlMjBzZWF0c3xlbnwxfHx8fDE3NzQyNDExNzB8MA&ixlib=rb-4.1.0&q=80&w=1080"
-                alt="Luxury airline interior"
+                alt="Interior lujoso de cabina de avión con asientos rojos y comodidad premium"
                 className="w-full h-full object-cover"
               />
             </div>
@@ -202,114 +255,70 @@ export function Home() {
       </div>
 
       {/* Clases de servicio */}
-      <div className="container mx-auto px-4 py-20">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold mb-3 text-gray-900">Elige tu clase</h2>
-          <p className="text-gray-600 text-lg">Viaja con el confort que mereces</p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-200 hover:shadow-2xl transition-shadow">
-            <div className="relative h-56">
-              <ImageWithFallback
-                src="https://images.unsplash.com/photo-1539576776193-2c07122e5fee?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb3VwbGUlMjB0cmF2ZWwlMjBhZHZlbnR1cmUlMjBiYWNrcGFja3xlbnwxfHx8fDE3NzMxNTU2MjZ8MA&ixlib=rb-4.1.0&q=80&w=1080"
-                alt="Economy"
-                className="w-full h-full object-cover"
-              />
+      <div className="bg-slate-50 py-20">
+        <div className="container mx-auto px-4">
+          <div className="mb-10 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="mb-2 text-sm font-bold uppercase tracking-wide text-blue-600">Clases de vuelo</p>
+              <h2 className="text-4xl font-bold text-gray-900">Elige cómo quieres viajar</h2>
             </div>
-            <div className="p-6">
-              <h3 className="text-2xl font-bold mb-3">Económica</h3>
-              <p className="text-gray-600 mb-4">Tarifas accesibles con todo lo que necesitas para un viaje cómodo</p>
-              <ul className="space-y-2 text-sm text-gray-600 mb-6">
-                <li className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 bg-blue-600 rounded-full" />
-                  Equipaje de mano incluido
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 bg-blue-600 rounded-full" />
-                  Snacks y bebidas
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 bg-blue-600 rounded-full" />
-                  Entretenimiento a bordo
-                </li>
-              </ul>
-              <button className="w-full bg-gray-100 text-gray-900 py-3 rounded-full hover:bg-gray-200 transition-colors font-medium">
-                Ver más
-              </button>
-            </div>
+            <p className="max-w-xl text-gray-600 text-lg">
+              Económica conserva el precio base, Business tiene descuento empresarial y Primera clase suma servicios premium.
+            </p>
           </div>
 
-          <div className="bg-white rounded-2xl overflow-hidden shadow-xl border-2 border-blue-600 hover:shadow-2xl transition-shadow relative">
-            <div className="absolute top-4 right-4 bg-blue-600 text-white px-4 py-1 rounded-full text-sm font-medium z-10">
-              Popular
-            </div>
-            <div className="relative h-56">
-              <ImageWithFallback
-                src="https://images.unsplash.com/photo-1567916190725-372c28edc554?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwaWxvdCUyMGNvY2twaXQlMjBjb250cm9sc3xlbnwxfHx8fDE3NzQyNDExNzB8MA&ixlib=rb-4.1.0&q=80&w=1080"
-                alt="Business"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="p-6">
-              <h3 className="text-2xl font-bold mb-3">Business</h3>
-              <p className="text-gray-600 mb-4">Máximo confort y servicio premium para profesionales</p>
-              <ul className="space-y-2 text-sm text-gray-600 mb-6">
-                <li className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 bg-blue-600 rounded-full" />
-                  Asientos reclinables 180°
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 bg-blue-600 rounded-full" />
-                  Comida gourmet
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 bg-blue-600 rounded-full" />
-                  Acceso a salas VIP
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 bg-blue-600 rounded-full" />
-                  Prioridad en embarque
-                </li>
-              </ul>
-              <button className="w-full bg-blue-600 text-white py-3 rounded-full hover:bg-blue-700 transition-colors font-medium">
-                Ver más
-              </button>
-            </div>
-          </div>
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+            {flightClasses.map((flightClass) => (
+              <article
+                key={flightClass.value}
+                className={`relative flex h-full flex-col overflow-hidden rounded-lg border bg-white shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl ${
+                  flightClass.popular ? 'border-blue-600 ring-2 ring-blue-600/15' : 'border-gray-200'
+                }`}
+              >
+                {flightClass.popular && (
+                  <div className="absolute right-4 top-4 z-10 rounded-full bg-blue-600 px-4 py-1 text-sm font-bold text-white shadow-lg">
+                    Popular
+                  </div>
+                )}
 
-          <div className="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-200 hover:shadow-2xl transition-shadow">
-            <div className="relative h-56">
-              <ImageWithFallback
-                src="https://images.unsplash.com/photo-1772354982639-5fdffe032394?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjB0cmF2ZWwlMjBidXNpbmVzcyUyMGNsYXNzfGVufDF8fHx8MTc3MzE1NTYyNnww&ixlib=rb-4.1.0&q=80&w=1080"
-                alt="First Class"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="p-6">
-              <h3 className="text-2xl font-bold mb-3">Primera Clase</h3>
-              <p className="text-gray-600 mb-4">Lujo excepcional y experiencia incomparable</p>
-              <ul className="space-y-2 text-sm text-gray-600 mb-6">
-                <li className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 bg-blue-600 rounded-full" />
-                  Suites privadas
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 bg-blue-600 rounded-full" />
-                  Chef a bordo
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 bg-blue-600 rounded-full" />
-                  Servicio personalizado
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 bg-blue-600 rounded-full" />
-                  Amenities de lujo
-                </li>
-              </ul>
-              <button className="w-full bg-gray-100 text-gray-900 py-3 rounded-full hover:bg-gray-200 transition-colors font-medium">
-                Ver más
-              </button>
-            </div>
+                <div className="relative h-56 overflow-hidden">
+                  <ImageWithFallback
+                    src={flightClass.image}
+                    alt={`Clase ${flightClass.name} de AEROTURS`}
+                    className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent" />
+                  <div className="absolute bottom-4 left-5 rounded-full bg-white/95 px-4 py-1 text-sm font-bold text-blue-700">
+                    {flightClass.priceNote}
+                  </div>
+                </div>
+
+                <div className="flex flex-1 flex-col p-6">
+                  <h3 className="mb-3 text-2xl font-bold text-gray-950">{flightClass.name}</h3>
+                  <p className="mb-5 text-gray-600">{flightClass.description}</p>
+
+                  <ul className="mb-6 space-y-3 text-sm text-gray-700">
+                    {flightClass.features.map((feature) => (
+                      <li key={feature} className="flex items-center gap-3">
+                        <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-700">
+                          <Check className="h-3.5 w-3.5" aria-hidden="true" />
+                        </span>
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <button
+                    type="button"
+                    className={`mt-auto inline-flex h-12 w-full items-center justify-center gap-2 rounded-md font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 ${flightClass.buttonClass}`}
+                    onClick={() => navigate(`/flights?flightClass=${flightClass.value}`)}
+                  >
+                    Ver vuelos
+                    <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                  </button>
+                </div>
+              </article>
+            ))}
           </div>
         </div>
       </div>

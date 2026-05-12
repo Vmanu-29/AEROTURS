@@ -11,16 +11,62 @@ import {
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
+import { getCurrentUserBookings, getStoredBookings, saveStoredBookings } from "../utils/bookings";
 
 export function MyBookings() {
   const navigate = useNavigate();
   const [bookings, setBookings] = useState<any[]>([]);
 
+  const getPaymentDeadline = (bookingDate: string) => {
+    const deadline = new Date(bookingDate);
+    deadline.setDate(deadline.getDate() + 5);
+
+    return deadline;
+  };
+
+  const formatDate = (date: Date | string) =>
+    new Date(date).toLocaleDateString("es-ES", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+
+  const getBookingStatus = (booking: any) => {
+    if (booking.status === "cancelled") {
+      return {
+        label: "Cancelada",
+        badgeVariant: "destructive" as const,
+        className: "",
+        isCancelled: true,
+        isPendingPayment: false,
+      };
+    }
+
+    if (
+      booking.status === "pending" ||
+      booking.status === "pending_payment" ||
+      booking.paymentStatus === "pending"
+    ) {
+      return {
+        label: "Pendiente por pagar",
+        badgeVariant: "default" as const,
+        className: "bg-amber-500 text-white rounded-full hover:bg-amber-500",
+        isCancelled: false,
+        isPendingPayment: true,
+      };
+    }
+
+    return {
+      label: "Pagada",
+      badgeVariant: "default" as const,
+      className: "bg-emerald-600 text-white rounded-full hover:bg-emerald-600",
+      isCancelled: false,
+      isPendingPayment: false,
+    };
+  };
+
   useEffect(() => {
-    const savedBookings = JSON.parse(
-      sessionStorage.getItem("myBookings") || "[]",
-    );
-    setBookings(savedBookings);
+    setBookings(getCurrentUserBookings());
   }, []);
 
   const handleCancelBooking = (reference: string) => {
@@ -34,11 +80,13 @@ export function MyBookings() {
           ? { ...b, status: "cancelled" }
           : b,
       );
-      setBookings(updated);
-      sessionStorage.setItem(
-        "myBookings",
-        JSON.stringify(updated),
+      const allBookings = getStoredBookings().map((booking) =>
+        booking.reference === reference
+          ? { ...booking, status: "cancelled" }
+          : booking,
       );
+      setBookings(updated);
+      saveStoredBookings(allBookings);
     }
   };
 
@@ -81,6 +129,18 @@ export function MyBookings() {
           </p>
         </div>
 
+        <div className="mb-6 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-amber-900 shadow-sm">
+          <div className="flex gap-3">
+            <Calendar className="mt-0.5 h-5 w-5 flex-shrink-0 text-amber-600" />
+            <div>
+              <p className="font-bold">Plazo para reservas pendientes</p>
+              <p className="mt-1 text-sm leading-relaxed">
+                Las reservas pendientes por pagar quedan separadas durante 5 días calendario. Si no se realiza el pago dentro de ese plazo, la reserva puede liberarse automáticamente.
+              </p>
+            </div>
+          </div>
+        </div>
+
         <div className="space-y-6">
           {bookings.map((booking) => {
             const {
@@ -91,16 +151,18 @@ export function MyBookings() {
               bookingDate,
               status,
             } = booking;
-            const isCancelled = status === "cancelled";
+            const bookingStatus = getBookingStatus(booking);
+            const { isCancelled, isPendingPayment } = bookingStatus;
 
             return (
               <Card
                 key={reference}
-                className={`p-6 rounded-xl ${isCancelled ? "opacity-60" : ""}`}
+                className={`group relative overflow-hidden rounded-2xl border-2 border-blue-200/70 bg-white p-6 shadow-xl shadow-blue-950/10 ring-1 ring-blue-500/10 transition-all duration-300 hover:-translate-y-1 hover:border-blue-500 hover:shadow-2xl hover:shadow-blue-600/20 hover:ring-blue-500/25 ${isCancelled ? "opacity-60" : ""}`}
               >
+                <div className="absolute inset-x-0 top-0 h-2 bg-gradient-to-r from-blue-500 via-sky-400 to-blue-700 transition-all duration-300 group-hover:h-3 group-hover:from-blue-700 group-hover:via-blue-500 group-hover:to-sky-400" />
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
-                    <div className="bg-blue-100 p-3 rounded-xl">
+                    <div className="bg-blue-100 p-3 rounded-xl shadow-inner ring-1 ring-blue-200">
                       <Ticket className="h-6 w-6 text-blue-600" />
                     </div>
                     <div>
@@ -113,20 +175,14 @@ export function MyBookings() {
                     </div>
                   </div>
                   <Badge
-                    variant={
-                      isCancelled ? "destructive" : "default"
-                    }
-                    className={
-                      isCancelled
-                        ? ""
-                        : "bg-blue-600 rounded-full"
-                    }
+                    variant={bookingStatus.badgeVariant}
+                    className={bookingStatus.className}
                   >
-                    {isCancelled ? "Cancelada" : "Confirmada"}
+                    {bookingStatus.label}
                   </Badge>
                 </div>
 
-                <div className="border-t pt-4 mb-4">
+                <div className="border-t border-blue-100 pt-4 mb-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Flight Info */}
                     <div>
@@ -197,26 +253,24 @@ export function MyBookings() {
                   </div>
                 </div>
 
-                <div className="border-t pt-4 flex items-center justify-between">
+                <div className="rounded-2xl border border-blue-100 bg-blue-50/60 px-5 py-4 flex items-center justify-between">
                   <div>
                     <p className="text-sm text-gray-600">
                       Fecha de reserva
                     </p>
                     <p className="font-medium">
-                      {new Date(bookingDate).toLocaleDateString(
-                        "es-ES",
-                        {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        },
-                      )}
+                      {formatDate(bookingDate)}
                     </p>
+                    {isPendingPayment && (
+                      <p className="mt-2 text-sm font-semibold text-amber-700">
+                        Pagar antes del {formatDate(getPaymentDeadline(bookingDate))}
+                      </p>
+                    )}
                   </div>
 
                   <div className="text-right">
                     <p className="text-sm text-gray-600">
-                      Total pagado
+                      {isPendingPayment ? "Total pendiente" : "Total pagado"}
                     </p>
                     <p className="text-2xl font-bold text-blue-600">
                       €
@@ -230,7 +284,7 @@ export function MyBookings() {
                 </div>
 
                 {!isCancelled && (
-                  <div className="border-t pt-4 mt-4 flex gap-3">
+                  <div className="border-t border-blue-100 pt-4 mt-4 flex gap-3">
                     <Button
                       variant="outline"
                       className="flex-1 rounded-full hover:bg-blue-50 border-blue-600 text-blue-700"

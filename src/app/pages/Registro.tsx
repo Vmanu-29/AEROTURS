@@ -13,6 +13,7 @@ export function Registro() {
     correo: '',
     password: '',
     confirmPassword: '',
+    tipo_cuenta: 'persona',
     tipo_documento: '',
     numero_documento: '',
     nombres: '',
@@ -52,6 +53,7 @@ export function Registro() {
     const result = await register({
       correo: formData.correo,
       password: formData.password,
+      tipo_cuenta: formData.tipo_cuenta as 'persona' | 'empresa',
       tipo_documento: formData.tipo_documento,
       numero_documento: formData.numero_documento,
       nombres: formData.nombres,
@@ -125,6 +127,24 @@ export function Registro() {
 
               <form className="space-y-4" onSubmit={handleSubmit}>
                 <div>
+                  <label htmlFor="tipo_cuenta" className="block text-sm font-semibold text-slate-700 mb-2">
+                    Tipo de cuenta *
+                  </label>
+                  <Select value={formData.tipo_cuenta} onValueChange={(value) => handleInputChange('tipo_cuenta', value)}>
+                    <SelectTrigger className="h-12 rounded-xl border-slate-200 bg-white text-base focus:outline-none focus:ring-2 focus:ring-blue-600">
+                      <SelectValue placeholder="Selecciona el tipo de cuenta" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="persona">Persona natural</SelectItem>
+                      <SelectItem value="empresa">Empresa</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="mt-2 text-xs text-slate-500">
+                    La clase Business solo estará disponible para cuentas empresariales.
+                  </p>
+                </div>
+
+                <div>
                   <label htmlFor="email" className="block text-sm font-semibold text-slate-700 mb-2">
                     Correo electrónico *
                   </label>
@@ -194,6 +214,9 @@ export function Registro() {
                         <SelectItem value="Cedula">Cédula</SelectItem>
                         <SelectItem value="Pasaporte">Pasaporte</SelectItem>
                         <SelectItem value="DNI">DNI</SelectItem>
+                        {formData.tipo_cuenta === 'empresa' && (
+                          <SelectItem value="NIT">NIT</SelectItem>
+                        )}
                       </SelectContent>
                     </Select>
                   </div>

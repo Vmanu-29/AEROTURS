@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router';
-import { Lock, LogOut, Menu, Plane, Ticket, User } from 'lucide-react';
+import { Lock, LogOut, Menu, Plane, Settings, Ticket, User } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Button } from './ui/button';
 import { getAuthUser, logout } from '../utils/auth';
@@ -26,6 +26,7 @@ export function Navbar() {
   }, []);
 
   const isLoggedIn = Boolean(user);
+  const isAdmin = user?.id_rol === 1;
 
   const protectedLinkClass = (path: string) =>
     `transition-colors font-medium flex items-center gap-1.5 ${
@@ -94,6 +95,16 @@ export function Navbar() {
               {isLoggedIn ? <Ticket className="h-4 w-4" /> : <Lock className="h-3.5 w-3.5" />}
               Mis Reservas
             </Link>
+
+            {isAdmin && (
+              <Link
+                to="/admin"
+                className={protectedLinkClass('/admin')}
+              >
+                <Settings className="h-4 w-4" />
+                Administrador
+              </Link>
+            )}
 
           </div>
 
