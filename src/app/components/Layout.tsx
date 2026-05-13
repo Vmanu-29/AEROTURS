@@ -3,9 +3,12 @@ import { Navbar } from './Navbar';
 
 export function Layout() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <a href="#main-content" className="skip-link">Saltar al contenido</a>
       <Navbar />
-      <Outlet />
+      <main id="main-content" className="flex-1">
+        <Outlet />
+      </main>
       <footer className="bg-gradient-to-br from-blue-600 to-blue-700 text-white py-12 mt-auto">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">

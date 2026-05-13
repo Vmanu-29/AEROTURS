@@ -1,19 +1,19 @@
 import { createBrowserRouter } from 'react-router';
-import { createElement } from 'react';
+import { createElement, lazy } from 'react';
 
 import { Layout } from './components/Layout';
 import { ProtectedRoute } from './components/ProtectedRoute';
-import { Home } from './pages/Home';
-import { FlightResults } from './pages/FlightResults';
-import { PassengerInfo } from './pages/PassengerInfo';
-import { Payment } from './pages/Payment';
-import { Confirmation } from './pages/Confirmation';
-import { MyBookings } from './pages/MyBookings';
-import { AdminDashboard } from './pages/AdminDashboard';
 
-import { Registro } from './pages/Registro';
-import EstadoVuelo from './pages/EstadoVuelo';
-import { Login } from './pages/Login';
+const Home = lazy(() => import('./pages/Home').then((module) => ({ default: module.Home })));
+const FlightResults = lazy(() => import('./pages/FlightResults').then((module) => ({ default: module.FlightResults })));
+const PassengerInfo = lazy(() => import('./pages/PassengerInfo').then((module) => ({ default: module.PassengerInfo })));
+const Payment = lazy(() => import('./pages/Payment').then((module) => ({ default: module.Payment })));
+const Confirmation = lazy(() => import('./pages/Confirmation').then((module) => ({ default: module.Confirmation })));
+const MyBookings = lazy(() => import('./pages/MyBookings').then((module) => ({ default: module.MyBookings })));
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard').then((module) => ({ default: module.AdminDashboard })));
+const Registro = lazy(() => import('./pages/Registro').then((module) => ({ default: module.Registro })));
+const EstadoVuelo = lazy(() => import('./pages/EstadoVuelo'));
+const Login = lazy(() => import('./pages/Login').then((module) => ({ default: module.Login })));
 
 function protectedElement(Component: () => JSX.Element) {
   return createElement(ProtectedRoute, null, createElement(Component));

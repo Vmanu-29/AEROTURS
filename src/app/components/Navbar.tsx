@@ -46,7 +46,7 @@ export function Navbar() {
   };
 
   return (
-    <nav className="bg-white sticky top-0 z-50 shadow-md border-b border-gray-200">
+    <nav aria-label="Navegación principal" className="bg-white sticky top-0 z-50 shadow-md border-b border-gray-200">
       <div className="container mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
 
@@ -69,6 +69,7 @@ export function Navbar() {
 
             <Link
               to="/"
+              aria-current={location.pathname === '/' ? 'page' : undefined}
               className={`hover:text-blue-600 transition-colors font-medium ${
                 location.pathname === '/'
                   ? 'text-blue-600 border-b-2 border-blue-600 pb-1'
@@ -81,6 +82,7 @@ export function Navbar() {
             <Link
               to={isLoggedIn ? '/estado-vuelo' : '/login'}
               state={protectedLinkState('/estado-vuelo')}
+              aria-current={location.pathname === '/estado-vuelo' ? 'page' : undefined}
               className={protectedLinkClass('/estado-vuelo')}
             >
               {!isLoggedIn && <Lock className="h-3.5 w-3.5" />}
@@ -90,6 +92,7 @@ export function Navbar() {
             <Link
               to={isLoggedIn ? '/my-bookings' : '/login'}
               state={protectedLinkState('/my-bookings')}
+              aria-current={location.pathname === '/my-bookings' ? 'page' : undefined}
               className={protectedLinkClass('/my-bookings')}
             >
               {isLoggedIn ? <Ticket className="h-4 w-4" /> : <Lock className="h-3.5 w-3.5" />}
@@ -99,6 +102,7 @@ export function Navbar() {
             {isAdmin && (
               <Link
                 to="/admin"
+                aria-current={location.pathname === '/admin' ? 'page' : undefined}
                 className={protectedLinkClass('/admin')}
               >
                 <Settings className="h-4 w-4" />
@@ -117,6 +121,7 @@ export function Navbar() {
                 size="sm"
                 onClick={handleLogout}
                 className="hidden md:flex border-blue-600 text-blue-600 hover:bg-blue-50 rounded-full"
+                aria-label="Cerrar sesión"
               >
                 <LogOut className="h-4 w-4 mr-2" />
                 Cerrar Sesión
@@ -127,6 +132,7 @@ export function Navbar() {
                 variant="outline"
                 size="sm"
                 className="hidden md:flex border-blue-600 text-blue-600 hover:bg-blue-50 rounded-full"
+                aria-label="Iniciar sesión en AEROTURS"
               >
                 <Link to="/login">
                   <User className="h-4 w-4 mr-2" />
@@ -139,6 +145,7 @@ export function Navbar() {
               variant="ghost"
               size="sm"
               className="md:hidden"
+              aria-label="Abrir menú de navegación"
             >
               <Menu className="h-5 w-5" />
             </Button>

@@ -5,18 +5,55 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [
-    // Los plugins de React y Tailwind son requeridos para Make, incluso si
-    // Tailwind no se está usando activamente – no los elimines
     react(),
     tailwindcss(),
   ],
+  server: {
+    open: true,
+  },
+
   resolve: {
     alias: {
-      // Alias @ hacia el directorio src
       '@': path.resolve(__dirname, './src'),
     },
   },
 
-  // Tipos de archivo para soportar importaciones raw. Nunca agregues archivos .css, .tsx, o .ts a esto.
+  build: {
+    // Minificación agresiva
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+      },
+    },
+    // Code splitting para reducir bundle principal
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router'],
+          'vendor-ui': [
+            '@radix-ui/react-dialog',
+            '@radix-ui/react-dropdown-menu',
+            '@radix-ui/react-select',
+            '@radix-ui/react-popover',
+          ],
+          'vendor-charts': ['recharts'],
+          'vendor-form': ['react-hook-form'],
+        },
+      },
+    },
+    // Reportar tamaño del bundle
+    reportCompressedSize: false,
+    // Aumentar límite de warnings
+    chunkSizeWarningLimit: 1000,
+  },
+
+  // Optimizar CSS
+  css: {
+    transformer: 'lightningcss',
+  },
+
+  // Tipos de archivo para soportar importaciones raw
   assetsInclude: ['**/*.svg', '**/*.csv'],
 })

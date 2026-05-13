@@ -66,14 +66,18 @@ export function SearchForm() {
 
         {/* Origen */}
         <div className={tripType === 'round-trip' ? "lg:col-span-2" : "lg:col-span-3"}>
-          <Label className="text-sm mb-1 block font-semibold">Origen</Label>
+          <Label htmlFor="search-from" id="label-search-from" className="text-sm mb-1 block font-semibold">Origen</Label>
           <div className="relative">
             <Plane className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 rotate-45" aria-hidden="true" />
             <Select
               value={searchData.from}
               onValueChange={(value) => setSearchData({ ...searchData, from: value })}
             >
-              <SelectTrigger className="w-full pl-8 h-9 rounded-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent">
+              <SelectTrigger
+                id="search-from"
+                aria-labelledby="label-search-from"
+                className="w-full pl-8 h-9 rounded-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+              >
                 <SelectValue placeholder="Ciudad origen" />
               </SelectTrigger>
               <SelectContent>
@@ -89,14 +93,18 @@ export function SearchForm() {
 
         {/* Destino */}
         <div className={tripType === 'round-trip' ? "lg:col-span-2" : "lg:col-span-3"}>
-          <Label className="text-sm mb-1 block font-semibold">Destino</Label>
+          <Label htmlFor="search-to" id="label-search-to" className="text-sm mb-1 block font-semibold">Destino</Label>
           <div className="relative">
             <Plane className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" aria-hidden="true" />
             <Select
               value={searchData.to}
               onValueChange={(value) => setSearchData({ ...searchData, to: value })}
             >
-              <SelectTrigger className="w-full pl-8 h-9 rounded-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent">
+              <SelectTrigger
+                id="search-to"
+                aria-labelledby="label-search-to"
+                className="w-full pl-8 h-9 rounded-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+              >
                 <SelectValue placeholder="Ciudad destino" />
               </SelectTrigger>
               <SelectContent>
@@ -112,10 +120,11 @@ export function SearchForm() {
 
         {/* Ida */}
         <div className="lg:col-span-2">
-          <Label className="text-sm mb-1 block font-semibold">Fecha de ida</Label>
+          <Label htmlFor="departure-date" id="label-departure-date" className="text-sm mb-1 block font-semibold">Fecha de ida</Label>
           <div className="relative">
             <Calendar className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" aria-hidden="true" />
             <Input
+              id="departure-date"
               type="date"
               className="w-full pl-8 h-9 rounded-md border border-gray-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
               style={{ colorScheme: 'light' }}
@@ -123,6 +132,7 @@ export function SearchForm() {
               onChange={(e) => setSearchData({ ...searchData, departureDate: e.target.value })}
               required
               aria-required="true"
+              aria-labelledby="label-departure-date"
             />
           </div>
         </div>
@@ -130,10 +140,11 @@ export function SearchForm() {
         {/* Vuelta */}
         {tripType === 'round-trip' && (
           <div className="lg:col-span-2">
-            <Label className="text-sm mb-1 block font-semibold">Fecha de vuelta</Label>
+            <Label htmlFor="return-date" id="label-return-date" className="text-sm mb-1 block font-semibold">Fecha de vuelta</Label>
             <div className="relative">
               <Calendar className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" aria-hidden="true" />
               <Input
+                id="return-date"
                 type="date"
                 className="w-full pl-8 h-9 rounded-md border border-gray-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                 style={{ colorScheme: 'light' }}
@@ -141,6 +152,7 @@ export function SearchForm() {
                 onChange={(e) => setSearchData({ ...searchData, returnDate: e.target.value })}
                 required
                 aria-required="true"
+                aria-labelledby="label-return-date"
               />
             </div>
           </div>
@@ -148,7 +160,7 @@ export function SearchForm() {
 
         {/* Pasajeros */}
         <div className="lg:col-span-1">
-          <Label className="text-sm mb-1 block font-semibold">Pasajeros</Label>
+          <Label htmlFor="passengers" id="label-passengers" className="text-sm mb-1 block font-semibold">Pasajeros</Label>
           <div className="relative">
             <Users className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" aria-hidden="true" />
             <Select
@@ -156,8 +168,12 @@ export function SearchForm() {
               onValueChange={(value) =>
                 setSearchData({ ...searchData, passengers: value })
               }
+            >
+              <SelectTrigger
+                id="passengers"
+                aria-labelledby="label-passengers"
+                className="w-full pl-7 pr-1 h-9 rounded-md border border-gray-200 text-center focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
               >
-              <SelectTrigger className="w-full pl-7 pr-1 h-9 rounded-md border border-gray-200 text-center focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent">
                 <SelectValue>
                   {searchData.passengers}
                 </SelectValue>
@@ -176,7 +192,7 @@ export function SearchForm() {
 
         {/* Clase */}
         <div className="lg:col-span-2">
-          <Label className="text-sm mb-1 block font-semibold">Clase</Label>
+          <Label htmlFor="flight-class" id="label-flight-class" className="text-sm mb-1 block font-semibold">Clase</Label>
           <div className="relative">
             <Briefcase className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" aria-hidden="true" />
             <Select
@@ -185,7 +201,11 @@ export function SearchForm() {
                 setSearchData({ ...searchData, flightClass: value })
               }
             >
-              <SelectTrigger className="w-full pl-8 h-9 rounded-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent">
+              <SelectTrigger
+                id="flight-class"
+                aria-labelledby="label-flight-class"
+                className="w-full pl-8 h-9 rounded-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+              >
                 <SelectValue placeholder="Clase" />
               </SelectTrigger>
 

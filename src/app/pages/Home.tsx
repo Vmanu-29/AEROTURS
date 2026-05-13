@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router';
 import { SearchForm } from '../components/SearchForm';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
+import { LazyImage } from '../components/LazyImage';
 import { ArrowRight, Check, Plane, Shield, Clock, Award, Globe, MapPin, Star, TrendingUp } from 'lucide-react';
 import { formatPrice } from '../utils/formatPrice';
 

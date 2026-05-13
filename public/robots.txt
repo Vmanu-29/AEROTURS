@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api
+Disallow: *.json$
+Disallow: *?*=*
+
+Sitemap: /sitemap.xml
+
+# Crawl delay para reducir carga
+Crawl-delay: 1
+
+# Rate limit (requests per second)
+Request-rate: 10/1s
