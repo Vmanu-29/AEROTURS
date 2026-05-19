@@ -19,14 +19,8 @@ export default defineConfig({
   },
 
   build: {
-    // Minificación agresiva
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true,
-      },
-    },
+    // Use Vite's default minifier to avoid requiring the optional terser package.
+    minify: 'esbuild',
     // Code splitting para reducir bundle principal
     rollupOptions: {
       output: {

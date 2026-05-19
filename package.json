@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "dev": "vite"
+    "dev": "vite",
+    "start:backend": "node backend/server.js",
+    "dev:all": "concurrently \"npm run dev\" \"npm run start:backend\""
   },
   "dependencies": {
     "@emotion/react": "11.14.0",
@@ -45,6 +47,7 @@
     "cmdk": "1.1.1",
     "cors": "^2.8.6",
     "date-fns": "3.6.0",
+    "dotenv": "^10.0.0",
     "embla-carousel-react": "8.6.0",
     "express": "^5.2.1",
     "input-otp": "1.4.2",
@@ -75,6 +78,7 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "4.7.0",
+    "concurrently": "^8.2.2",
     "tailwindcss": "4.1.12",
     "terser": "^5.47.1",
     "typescript": "^6.0.3",

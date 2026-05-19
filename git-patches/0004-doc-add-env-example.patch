@@ -1,0 +1,34 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: GitHub Copilot <noreply@example.com>
+Date: Sun, 18 May 2026 00:00:00 +0000
+Subject: [PATCH 4/5] docs(env): add .env.example for local and remote DB config
+
+Add example environment file for local and Neon/Supabase PostgreSQL configuration.
+
+---
+ .env.example | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+ new file mode 100644
+
+diff --git a/.env.example b/.env.example
+new file mode 100644
+index 0000000..e69de29
+--- /dev/null
++++ b/.env.example
+@@ -0,0 +1,15 @@
++# Variables de entorno para el backend PostgreSQL
++# Usa DATABASE_URL para Neon o Supabase cuando tengas una DB remota.
++# Ejemplo: DATABASE_URL=postgresql://user:password@host:5432/aerolinea
++DATABASE_URL=
++PG_CONNECTION_STRING=
++
++DB_USER=postgres
++DB_PASSWORD=tu_contraseña
++DB_HOST=localhost
++DB_PORT=5432
++DB_NAME=aerolinea
++DB_SSL=false
++DB_SSL_REJECT_UNAUTHORIZED=false
++
++# Opcional para Vite
++BROWSER=chrome
