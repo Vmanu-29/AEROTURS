@@ -1,0 +1,42 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: GitHub Copilot <noreply@example.com>
+Date: Sun, 18 May 2026 00:00:00 +0000
+Subject: [PATCH 3/5] chore(package): add dotenv and concurrently dependencies
+
+Update package.json to add dotenv, concurrently and backend/frontend startup scripts.
+
+---
+ package.json |  13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/package.json b/package.json
+index d124736f..722b6c66 100644
+--- a/package.json
++++ b/package.json
+@@ -3,6 +3,8 @@
+   "type": "module",
+   "scripts": {
+     "build": "vite build",
+     "dev": "vite",
++    "start:backend": "node backend/server.js",
++    "dev:all": "concurrently \"npm run dev\" \"npm run start:backend\""
+   },
+   "dependencies": {
+@@
+     "cmdk": "1.1.1",
+     "cors": "^2.8.6",
+     "date-fns": "3.6.0",
++    "dotenv": "^10.0.0",
+     "embla-carousel-react": "8.6.0",
+     "express": "^5.2.1",
+     "input-otp": "1.4.2",
+@@
+     "@types/react": "^19.2.14",
+     "@types/react-dom": "^19.2.3",
+     "@vitejs/plugin-react": "4.7.0",
++    "concurrently": "^8.2.2",
+     "tailwindcss": "4.1.12",
+     "terser": "^5.47.1",
+     "typescript": "^6.0.3",
+     "vite": "6.4.2"
+   },

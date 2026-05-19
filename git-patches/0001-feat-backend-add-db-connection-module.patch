@@ -1,0 +1,58 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: GitHub Copilot <noreply@example.com>
+Date: Sun, 18 May 2026 00:00:00 +0000
+Subject: [PATCH 1/5] feat(backend): add PostgreSQL connection module
+
+Add backend/db.js as a shared PostgreSQL connection module.
+Support local DB config and remote connection strings for Neon/Supabase.
+Handle optional SSL configuration.
+
+---
+ backend/db.js | 38 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
+ create mode 100644 backend/db.js
+
+diff --git a/backend/db.js b/backend/db.js
+new file mode 100644
+index 0000000..b7106e2
+--- /dev/null
++++ b/backend/db.js
+@@ -0,0 +1,38 @@
++import dotenv from 'dotenv';
++import { Pool } from 'pg';
++
++dotenv.config();
++
++const connectionString = process.env.DATABASE_URL || process.env.PG_CONNECTION_STRING;
++const useRemote = Boolean(connectionString);
++
++const poolConfig = useRemote
++  ? {
++      connectionString,
++      ssl: process.env.DB_SSL === 'true' ? {
++        rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED !== 'false',
++      } : false,
++    }
++  : {
++      user: process.env.DB_USER || process.env.PGUSER || 'postgres',
++      host: process.env.DB_HOST || process.env.PGHOST || 'localhost',
++      database: process.env.DB_NAME || process.env.PGDATABASE || 'aerolinea',
++      port: Number(process.env.DB_PORT || process.env.PGPORT || 5432),
++      password: process.env.DB_PASSWORD || process.env.PGPASSWORD,
++    };
++
++const pool = new Pool(poolConfig);
++
++pool.connect()
++  .then((client) => {
++    client.release();
++    console.log('Conectado a PostgreSQL correctamente');
++    if (useRemote) {
++      console.log('Usando conexión remota a la base de datos.');
++    }
++  })
++  .catch((error) => {
++    console.error('Error conectando a PostgreSQL:', error);
++  });
++
++export default pool;
