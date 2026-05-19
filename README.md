@@ -45,3 +45,7 @@ Incorporacion de precios con mas destinos, informacion general y seleccion de cl
 - Business disponible solo para cuentas empresariales.
 - Registro con tipo de cuenta: persona natural o empresa.
 - Panel de administrador para ver, crear, modificar y cancelar reservas de usuarios.
+
+- refactor(backend): use shared DB module and improve routes
+
+
