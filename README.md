@@ -46,6 +46,8 @@ Incorporacion de precios con mas destinos, informacion general y seleccion de cl
 - Registro con tipo de cuenta: persona natural o empresa.
 - Panel de administrador para ver, crear, modificar y cancelar reservas de usuarios.
 
+- feat(backend): add PostgreSQL connection module
+
 - refactor(backend): use shared DB module and improve routes
 
 - chore(package): add dotenv and concurrently dependencies
