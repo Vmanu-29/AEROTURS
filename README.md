@@ -48,4 +48,5 @@ Incorporacion de precios con mas destinos, informacion general y seleccion de cl
 
 - refactor(backend): use shared DB module and improve routes
 
-
+- chore(package): add dotenv and concurrently dependencies
+   
