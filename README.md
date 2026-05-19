@@ -51,3 +51,7 @@ Incorporacion de precios con mas destinos, informacion general y seleccion de cl
 - chore(package): add dotenv and concurrently dependencies
    
 - docs(env): add .env.example for local and remote DB config
+
+- docs(readme): document backend startup and Neon/Supabase setup
+
+
