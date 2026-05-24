@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Manual de Usuario — AEROTURS</title>
+    <link href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.2.0/github-markdown.min.css" rel="stylesheet">
+    <style>
+      body { padding: 40px; background: #f6f8fa; }
+      .markdown-body { max-width: 900px; margin: 0 auto; background: white; padding: 40px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+      @media print {
+        body { background: white; }
+        .markdown-body { box-shadow: none; padding: 20px; }
+      }
+    </style>
+  </head>
+  <body>
+    <article class="markdown-body" id="content"></article>
+
+    <script id="md" type="text/plain">
+<!--- BEGIN MANUAL --->
+# Manual de Usuario — AEROTURS
+
+Última actualización: 19 de mayo de 2026
+
+Versión: 1.1
+
+Propósito: Este manual está pensado para guiar a usuarios finales (clientes), operadores y administradores en el uso y administración de la aplicación AEROTURS. Incluye instrucciones de instalación, uso diario, gestión de paquetes turísticos y resolución de problemas.
+
+---
+
+## Contenido
+
+- 1. Introducción
+- 2. Requisitos
+- 3. Instalación y puesta en marcha
+- 4. Estructura del proyecto
+- 5. Uso de la aplicación (cliente)
+  - 5.1. Búsqueda y reserva de vuelos
+  - 5.2. Planes turísticos
+  - 5.3. Gestión de reservas
+  - 5.4. Perfil y autenticación
+- 6. Administración y operaciones (operador)
+  - 6.1. Panel de administrador
+  - 6.2. Gestión de paquetes y precios
+  - 6.3. Gestión de usuarios
+- 7. API y base de datos (resumen técnico)
+- 8. Variables de entorno y despliegue
+- 9. Resolución de problemas frecuentes
+- 10. Buenas prácticas de seguridad
+- 11. Glosario
+- 12. Contacto y contribuciones
+
+---
+
+## 1. Introducción
+
+AEROTURS es una plataforma web para la búsqueda y reserva de vuelos, además de ofrecer paquetes turísticos predefinidos. El sistema está pensado para ser usado por clientes finales y personal administrativo que gestione reservas y paquetes.
+
+## 2. Requisitos
+
+- Node.js >= 18
+- npm o pnpm
+- PostgreSQL (opcional para entorno de producción)
+- Variables de entorno configuradas (ver sección 8)
+
+## 3. Instalación y puesta en marcha
+
+### 3.1 Instalación de dependencias
+
+```bash
+npm install
+```
+
+### 3.2 Ejecutar en desarrollo
+
+Frontend (Vite):
+
+```bash
+npm run dev
+```
+
+Backend (Express):
+
+```bash
+npm run start:backend
+```
+
+Para ejecutar ambos en paralelo:
+
+```bash
+npm run dev:all
+```
+
+### 3.3 Construcción para producción
+
+```bash
+npm run build
+```
+
+## 4. Estructura del proyecto (resumen útil)
+
+- `index.html` — entrada HTML.
+- `src/main.tsx` — bootstrap de React.
+- `src/app/routes.ts` — definición de rutas (incluye `/tours`).
+- `src/app/pages` — páginas principales (`Home`, `Tours`, `Login`, `Registro`, etc.).
+- `src/app/components` — componentes reutilizables (Navbar, TourPackageCard, SearchForm).
+- `src/data/mockTours.ts` — datos de ejemplo para paquetes turísticos.
+- `src/app/types` — tipos TypeScript (incluye `tour.ts`).
+- `backend/server.js` y `backend/db.js` — servidor y conexión a PostgreSQL.
+
+## 5. Uso de la aplicación (cliente)
+
+### 5.1 Búsqueda y reserva de vuelos
+
+- En la página principal (`/`) encontrarás el formulario de búsqueda.
+- Selecciona origen, destino, fechas y clase. Presiona buscar.
+- Elige una opción de vuelo en los resultados y sigue el flujo para ingresar datos de pasajeros y pago.
+
+### 5.2 Planes turísticos
+
+- Accede a `Planes turísticos` desde la barra de navegación.
+- Selecciona la ciudad de origen en el selector para ver precios ajustados.
+- Cada tarjeta muestra: lugares, hoteles, si incluye comida, duración y precio.
+- Para modificar paquetes edita `src/data/mockTours.ts` (o implementar un CRUD en backend para gestionar dinámicamente).
+
+### 5.3 Gestión de reservas
+
+- `Mis Reservas` muestra reservas del usuario autenticado.
+- El flujo actual depende de la persistencia configurada en backend; revisa `src/app/utils/bookings.ts` para adaptar.
+
+### 5.4 Perfil y autenticación
+
+- Usa `Registro` para crear cuenta. Campos obligatorios: correo, contraseña, tipo y número de documento, nombres, apellidos, ciudad y país, teléfono.
+- `Login` autentica contra `/login` en el backend. Actualmente las contraseñas se comparan en texto; en producción se debe usar hashing.
+
+## 6. Administración y operaciones (operador)
+
+### 6.1 Panel de administrador
+
+- Ruta: `/admin` (visible solo a usuarios con `id_rol` correspondiente).
+- Funcionalidades esperadas: ver y gestionar reservas, usuarios y paquetes.
+
+### 6.2 Gestión de paquetes y precios
+
+- Los paquetes se encuentran en `src/data/mockTours.ts` con la estructura `priceByOrigin` para precios por ciudad. Ejemplo:
+
+```ts
+priceByOrigin: {
+  'Bogotá': 1250000,
+  'Ciudad de México': 1650000,
+}
+```
+
+- Para producción, se recomienda crear una tabla `tours` y exponer endpoints CRUD en el backend.
+
+### 6.3 Gestión de usuarios
+
+- En el backend hay endpoints de registro y login. Para administración de usuarios (activar/desactivar, roles) debes implementar endpoints adicionales y vistas en el panel administrativo.
+
+## 7. API y base de datos (resumen técnico)
+
+### 7.1 Endpoints principales (existentes)
+
+- `GET /` — salud básica del backend.
+- `GET /health` — estado y tipo de conexión DB.
+- `POST /login` — autenticar (correo, password).
+- `POST /register` — crear usuario/cliente.
+
+### 7.2 Conexión a BD
+
+- `backend/db.js` usa `DATABASE_URL` o variables `DB_*`. En modo local usa `PGUSER`, `PGHOST`, `PGDATABASE`, `PGPORT`, `PGPASSWORD`.
+
+### 7.3 Esquema sugerido (resumen)
+
+- `usuario` (id_usuario, id_rol, correo, password, estado)
+- `cliente` (id_cliente, id_usuario, tipo_documento, numero_documento, nombres, apellidos, ciudad, pais, telefono_principal, fecha_nacimiento)
+- `reserva` / `booking` (id, id_usuario, id_vuelo, fecha_reserva, estado, precio)
+- `tours` (id_tour, titulo, descripcion, lugares JSON, hoteles JSON, includesFood, days, priceBase, priceByOrigin JSON)
+
+## 8. Variables de entorno y despliegue
+
+- `PORT` — puerto del backend (por defecto 3000).
+- `DATABASE_URL` o `PG_CONNECTION_STRING` — conexión remota.
+- `DB_SSL` — si se requiere SSL para la BD.
+
+Despliegue recomendado:
+
+- Plataforma frontend: Vercel, Netlify o servicio estático con CDN.
+- Backend: servidor Node (Heroku, Railway, Render) con variables de entorno seguras.
+- Base de datos: hosted PostgreSQL o RDS.
+
+## 9. Resolución de problemas frecuentes
+
+- Error: no se conecta a PostgreSQL
+  - Revisa `DATABASE_URL` o variables `DB_*` y la accesibilidad del host.
+
+- Error: CORS
+  - Asegura que el backend permite peticiones desde el origen del frontend o configura `cors()` con opciones.
+
+- Error: rutas no encontradas
+  - Verifica `src/app/routes.ts` y que los componentes existen con export correcto.
+
+## 10. Buenas prácticas de seguridad
+
+- Hash de contraseñas en backend (bcrypt).
+- No usar `console.error` para suprimir errores críticos; registrar con loggers.
+- Validación del lado servidor de todas las entradas.
+- Escapar y sanear datos antes de guardarlos o mostrarlos.
+
+## 11. Glosario
+
+- TourPackage: paquete turístico con `places`, `hotels`, `days`, `priceByOrigin`.
+- Booking: reserva de vuelo o paquete asociada a un usuario.
+
+## 12. Contacto y contribuciones
+
+Si deseas contribuir, por favor:
+
+1. Crea una rama con prefijo `feat/` o `fix/`.
+2. Abre un Pull Request describiendo el cambio.
+3. Ejecuta `npm run dev` y asegura que la app compila y funciona.
+
+---
+
+Anexos: ejemplo de edición rápida de un paquete en `src/data/mockTours.ts` y pasos para migrar la gestión de paquetes a backend (objetivo para producción).
+
+¿Quieres que genere también:
+- Un README actualizado con enlace al manual?
+- Una versión PDF del manual?
+- Una sección `Administración avanzada` con endpoints SQL y estructura de tablas detallada?
+
+<!--- END MANUAL --->
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+      const md = document.getElementById('md').textContent;
+      document.getElementById('content').innerHTML = marked.parse(md);
+      // Optional: automatically open print dialog after rendering
+      // window.print();
+    </script>
+  </body>
+</html>

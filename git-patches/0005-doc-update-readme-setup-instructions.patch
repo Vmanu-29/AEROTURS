@@ -1,0 +1,61 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: GitHub Copilot <noreply@example.com>
+Date: Sun, 18 May 2026 00:00:00 +0000
+Subject: [PATCH 5/5] docs(readme): document backend startup and Neon/Supabase setup
+
+Update README.md with setup instructions for frontend, backend and remote database use.
+
+---
+ README.md | 31 ++++++++++++----------------------
+ 1 file changed, 13 insertions(+), 18 deletions(-)
+
+diff --git a/README.md b/README.md
+index f35fa1d5..0904be21 100644
+--- a/README.md
++++ b/README.md
+@@ -6,7 +6,11 @@ This is a code bundle for AEROTURS. The original project is ava
+ ilable at https://www.figma.com/design/zbGu1A5SIeigqlTtHsKPml/AEROTURS.
+ 
+ Run `npm i` to install the dependencies.
+ 
+-Run `npm run dev` to start the development server.
++Copy `.env.example` to `.env` and set your database connection values before starting the backend.
++
++Run `npm run dev` to start the frontend development server.
++Run `npm run start:backend` to start the Express backend on port 3000.
++Run `npm run dev:all` to start frontend and backend together.
+ 
+ ## Base de datos
+@@ -16,6 +20,31 @@ El proyecto usa PostgreSQL. Para crear la base de datos `aero
+ linea`, sus tablas
+ psql -U postgres -f database/aeroturs.sql
+ ```
+ 
++También puedes usar pgAdmin4 para conectarte al servidor PostgreSQL local y ejecutar el script `database/aeroturs.sql`.
++
++Si usas un archivo `.env`, define las variables:
++
++```env
++DB_USER=postgres
++DB_PASSWORD=tu_contraseña
++DB_HOST=localhost
++DB_PORT=5432
++DB_NAME=aerolinea
++```
++
++Si quieres usar Neon, Supabase u otra base de datos PostgreSQL remota, define también:
++
++```env
++DATABASE_URL=postgresql://usuario:contraseña@host:5432/aerolinea
++# o PG_CONNECTION_STRING si prefieres otro nombre
++DB_SSL=true
++DB_SSL_REJECT_UNAUTHORIZED=false
++```
++
++En Neon y Supabase normalmente puedes copiar el connection string desde la consola de administración y pegarlo en `DATABASE_URL`.
++
++> Para bases administradas remotas no ejecutes `CREATE DATABASE` ni `DROP DATABASE` desde `database/aeroturs.sql`; sólo usa los comandos `CREATE TABLE` e `INSERT` dentro de tu base de datos existente.
+ 
+ Usuarios de prueba:
+ 
+ - `admin@aeroturs.com` / `admin123`

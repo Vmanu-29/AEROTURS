@@ -1,0 +1,38 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: GitHub Copilot <noreply@example.com>
+Date: Sun, 18 May 2026 00:00:00 +0000
+Subject: [PATCH 6/6] fix(backend): make /health check DB connectivity
+
+Make the `/health` endpoint perform a lightweight DB query to verify connectivity
+and return an accurate status. This helps detect DB auth/connection issues.
+
+---
+ backend/server.js | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/backend/server.js b/backend/server.js
+index d53f0cb5..abcdef12 100644
+--- a/backend/server.js
++++ b/backend/server.js
+@@ -7,7 +7,17 @@ dotenv.config();
+ const useRemote = Boolean(process.env.DATABASE_URL || process.env.PG_CONNECTION_STRING);
+ 
+ const app = express();
+ app.use(cors());
+ app.use(express.json());
+-
+-app.get('/health', (req, res) => {
+-  res.json({ status: 'ok', database: useRemote ? 'remote' : 'local' });
+-});
++app.get('/health', async (req, res) => {
++  try {
++    // simple lightweight query to validate DB connectivity
++    await pool.query('SELECT 1');
++    return res.json({ status: 'ok', database: useRemote ? 'remote' : 'local' });
++  } catch (err) {
++    console.error('Health check DB error:', err);
++    return res.status(503).json({ status: 'error', database: 'unavailable', message: err.message });
++  }
++});
+ 
+*** End Patch

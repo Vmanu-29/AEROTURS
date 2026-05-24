@@ -80,6 +80,18 @@ export function Navbar() {
             </Link>
 
             <Link
+              to="/tours"
+              aria-current={location.pathname === '/tours' ? 'page' : undefined}
+              className={`hover:text-blue-600 transition-colors font-medium ${
+                location.pathname === '/tours'
+                  ? 'text-blue-600 border-b-2 border-blue-600 pb-1'
+                  : 'text-gray-700'
+              }`}
+            >
+              Planes turísticos
+            </Link>
+
+            <Link
               to={isLoggedIn ? '/estado-vuelo' : '/login'}
               state={protectedLinkState('/estado-vuelo')}
               aria-current={location.pathname === '/estado-vuelo' ? 'page' : undefined}
@@ -134,7 +146,7 @@ export function Navbar() {
                 className="hidden md:flex border-blue-600 text-blue-600 hover:bg-blue-50 rounded-full"
                 aria-label="Iniciar sesión en AEROTURS"
               >
-                <Link to="/login">
+                <Link to="/login" state={{ from: location.pathname }}>
                   <User className="h-4 w-4 mr-2" />
                   Iniciar Sesión
                 </Link>

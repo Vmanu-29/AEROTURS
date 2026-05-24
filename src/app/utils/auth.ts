@@ -226,6 +226,16 @@ export function getAuthUser(): AuthUser | null {
   }
 }
 
+export function getAuthenticatedUserDetails() {
+  const authUser = getAuthUser();
+  if (!authUser) {
+    return null;
+  }
+
+  const users = getLocalUsers();
+  return users.find((user) => user.correo.toLowerCase() === authUser.correo.toLowerCase()) ?? authUser;
+}
+
 export function isAuthenticated() {
   return Boolean(getAuthUser());
 }

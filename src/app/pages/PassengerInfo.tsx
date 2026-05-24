@@ -7,6 +7,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Card } from '../components/ui/card';
 import { Passenger } from '../types/flight';
+import { getAuthenticatedUserDetails } from '../utils/auth';
 
 export function PassengerInfo() {
   const navigate = useNavigate();
@@ -14,23 +15,47 @@ export function PassengerInfo() {
   const [passengers, setPassengers] = useState<Passenger[]>([]);
 
   useEffect(() => {
-    const data = sessionStorage.getItem('selectedFlight');
-    if (!data) {
+    const flightData = sessionStorage.getItem('selectedFlight');
+    const tourData = sessionStorage.getItem('selectedTour');
+    const authDetails = getAuthenticatedUserDetails();
+
+    if (!flightData && !tourData) {
       navigate('/');
       return;
     }
-    const parsed = JSON.parse(data);
+
+    let parsed: any = null;
+    if (flightData) {
+      parsed = JSON.parse(flightData);
+    } else {
+      parsed = JSON.parse(tourData as string);
+    }
+
     setBookingData(parsed);
-    
-    // Inicializar formularios de pasajeros
-    const initialPassengers = Array.from({ length: parsed.passengers }, () => ({
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      dateOfBirth: '',
-      documentNumber: ''
-    }));
+
+    const initialPassengers = Array.from({ length: parsed.passengers }, (_, index) => {
+      if (index === 0 && authDetails) {
+        const [firstName, ...rest] = authDetails.nombre?.split(' ') ?? ['', ''];
+        return {
+          firstName: firstName || '',
+          lastName: rest.join(' ') || '',
+          email: authDetails.correo || '',
+          phone: authDetails.telefono_principal || '',
+          dateOfBirth: authDetails.fecha_nacimiento || '',
+          documentNumber: authDetails.numero_documento || '',
+        };
+      }
+
+      return {
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        dateOfBirth: '',
+        documentNumber: '',
+      };
+    });
+
     setPassengers(initialPassengers);
   }, [navigate]);
 
@@ -62,7 +87,9 @@ export function PassengerInfo() {
     return null;
   }
 
-  const { flight, passengers: passengerCount } = bookingData;
+  const passengerCount = bookingData.passengers ?? 1;
+  const isTourBooking = Boolean(bookingData.tour);
+  const bookingPrice = isTourBooking ? bookingData.tour.price : bookingData.flight?.price ?? 0;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white py-8">
@@ -80,19 +107,30 @@ export function PassengerInfo() {
 
         {/* Flight Summary */}
         <Card className="p-6 mb-6 bg-gradient-to-br from-blue-600 to-blue-700 border-blue-700 rounded-xl">
-          <div className="flex justify-between items-start">
+          <div className="flex flex-col gap-5 sm:flex-row sm:justify-between sm:items-start">
             <div>
-              <p className="font-bold text-lg mb-2 text-white">Vuelo {flight.flightNumber}</p>
-              <p className="text-white/90">
-                {flight.origin} → {flight.destination}
-              </p>
-              <p className="text-sm text-white/80">
-                Salida: {flight.departureTime} • Duración: {flight.duration}
-              </p>
+              {isTourBooking ? (
+                <>
+                  <p className="font-bold text-lg mb-2 text-white">Tour seleccionado</p>
+                  <p className="text-white/90">{bookingData.tour.title}</p>
+                  <p className="text-sm text-white/80">{bookingData.tour.description}</p>
+                  <p className="text-sm text-white/80">Origen: {bookingData.origin}</p>
+                </>
+              ) : (
+                <>
+                  <p className="font-bold text-lg mb-2 text-white">Vuelo {bookingData.flight.flightNumber}</p>
+                  <p className="text-white/90">
+                    {bookingData.flight.origin} → {bookingData.flight.destination}
+                  </p>
+                  <p className="text-sm text-white/80">
+                    Salida: {bookingData.flight.departureTime} • Duración: {bookingData.flight.duration}
+                  </p>
+                </>
+              )}
             </div>
             <div className="text-right">
               <p className="text-2xl font-bold text-white">
-                {formatPrice(flight.price * passengerCount)}
+                {formatPrice((isTourBooking ? bookingData.tour.price : bookingData.flight.price) * passengerCount)}
               </p>
               <p className="text-sm text-white/80">
                 {passengerCount} {passengerCount === 1 ? 'pasajero' : 'pasajeros'}
@@ -214,7 +252,7 @@ export function PassengerInfo() {
 
           <div className="flex justify-between items-center pt-4">
             <p className="text-2xl font-bold">
-              Total: {formatPrice(flight.price * passengerCount)}
+              Total: {formatPrice(bookingPrice * passengerCount)}
             </p>
             <Button 
               type="submit" 

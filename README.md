@@ -6,7 +6,11 @@ This is a code bundle for AEROTURS. The original project is available at https:/
 
 Run `npm i` to install the dependencies.
 
-Run `npm run dev` to start the development server.
+Copy `.env.example` to `.env` and set your database connection values before starting the backend.
+
+Run `npm run dev` to start the frontend development server.
+Run `npm run start:backend` to start the Express backend on port 3000.
+Run `npm run dev:all` to start frontend and backend together.
 
 ## Base de datos
 
@@ -15,6 +19,31 @@ El proyecto usa PostgreSQL. Para crear la base de datos `aerolinea`, sus tablas 
 ```bash
 psql -U postgres -f database/aeroturs.sql
 ```
+
+También puedes usar pgAdmin4 para conectarte al servidor PostgreSQL local y ejecutar el script `database/aeroturs.sql`.
+
+Si usas un archivo `.env`, define las variables:
+
+```env
+DB_USER=postgres
+DB_PASSWORD=tu_contraseña
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=aerolinea
+```
+
+Si quieres usar Neon, Supabase u otra base de datos PostgreSQL remota, define también:
+
+```env
+DATABASE_URL=postgresql://usuario:contraseña@host:5432/aerolinea
+# o PG_CONNECTION_STRING si prefieres otro nombre
+DB_SSL=true
+DB_SSL_REJECT_UNAUTHORIZED=false
+```
+
+En Neon y Supabase normalmente puedes copiar el connection string desde la consola de administración y pegarlo en `DATABASE_URL`.
+
+> Para bases administradas remotas no ejecutes `CREATE DATABASE` ni `DROP DATABASE` desde `database/aeroturs.sql`; sólo usa los comandos `CREATE TABLE` e `INSERT` dentro de tu base de datos existente.
 
 Usuarios de prueba:
 

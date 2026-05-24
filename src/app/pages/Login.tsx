@@ -9,7 +9,7 @@ import { login } from '../utils/auth';
 export function Login() {
   const navigate = useNavigate();
   const location = useLocation();
-  const from = (location.state as { from?: string } | null)?.from || '/my-bookings';
+  const from = (location.state as { from?: string } | null)?.from || '/';
   const [correo, setCorreo] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
