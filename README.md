@@ -74,3 +74,15 @@ Incorporacion de precios con mas destinos, informacion general y seleccion de cl
 - Business disponible solo para cuentas empresariales.
 - Registro con tipo de cuenta: persona natural o empresa.
 - Panel de administrador para ver, crear, modificar y cancelar reservas de usuarios.
+
+- feat(backend): add PostgreSQL connection module
+
+- refactor(backend): use shared DB module and improve routes
+
+- chore(package): add dotenv and concurrently dependencies
+   
+- docs(env): add .env.example for local and remote DB config
+
+- docs(readme): document backend startup and Neon/Supabase setup
+
+
