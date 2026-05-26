@@ -85,4 +85,6 @@ Incorporacion de precios con mas destinos, informacion general y seleccion de cl
 
 - docs(readme): document backend startup and Neon/Supabase setup
 
+## creacion de enlace web
 
+Se esta realizando creacion de vinculo a la pagina sin necesidad de tener el proyecto, sin embargo han habido inconvenientes, por motivos de que la pagina se queda en un espacio en blanco en la web
