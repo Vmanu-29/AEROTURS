@@ -1,6 +1,6 @@
 import { useSearchParams, useNavigate } from 'react-router';
 import { useState, useMemo } from 'react';
-import { Plane, Clock, Calendar, ArrowRight } from 'lucide-react';
+import { Plane, Clock, Calendar, ArrowRight, AlertCircle } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
@@ -27,11 +27,28 @@ export function FlightResults() {
   const fromCity = destinations.find(d => d.code === from)?.city || from;
   const toCity = destinations.find(d => d.code === to)?.city || to;
 
-  const availableFlights = useMemo(() => {
-    const routeFlights = from && to
-      ? mockFlights.filter(flight => flight.origin === from && flight.destination === to)
-      : mockFlights;
+  // ESTADO PARA SABER SI ESTAMOS MOSTRANDO DISEÑOS DE FALLBACK (TODOS LOS VUELOS)
+  const [isShowingFallback, setIsShowingFallback] = useState(false);
 
+  // CONTROL AVANZADO DE RESULTADOS: RUTAS DIRECTAS O CATÁLOGO COMPLETO
+  const availableFlights = useMemo(() => {
+    let routeFlights = mockFlights;
+
+    if (from && to) {
+      routeFlights = mockFlights.filter(
+        (flight) => flight.origin === from && flight.destination === to
+      );
+
+      // Si no hay vuelos específicos para esa ruta, tomamos la lista completa para no dejar la pantalla vacía
+      if (routeFlights.length === 0) {
+        routeFlights = mockFlights;
+        setIsShowingFallback(true);
+      } else {
+        setIsShowingFallback(false);
+      }
+    }
+
+    // Mapear los precios calculados según la clase solicitada corporativa o premium
     return routeFlights.map((flight) => applyFlightClassPricing(flight, flightClass));
   }, [flightClass, from, to]);
 
@@ -42,75 +59,97 @@ export function FlightResults() {
       const user = getAuthUser();
 
       if (!user || user.tipo_cuenta !== 'empresa') {
-        setBookingError('La clase Business solo está disponible para cuentas empresariales. Inicia sesión con una cuenta de empresa o crea una cuenta empresarial para continuar.');
+        setBookingError(
+          'La clase Business solo está disponible para cuentas empresariales. Inicia sesión con una cuenta de empresa o crea una cuenta empresarial para continuar.'
+        );
         return;
       }
     }
 
     setSelectedFlight(flight);
-    // Guardar datos del vuelo en sessionStorage para los siguientes pasos
-    sessionStorage.setItem('selectedFlight', JSON.stringify({
-      flight,
-      passengers: parseInt(passengers),
-      tripType,
-      departureDate
-    }));
-    navigate('/passenger-info');
-  };
 
-  if (availableFlights.length === 0) {
-    return (
-      <div className="min-h-screen bg-gray-50 py-8">
-        <div className="container mx-auto px-4">
-          <Card className="p-8 text-center rounded-xl">
-            <Plane className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold mb-2">No hay vuelos disponibles</h2>
-            <p className="text-gray-600 mb-4">
-              No encontramos vuelos de {fromCity} a {toCity} en la fecha seleccionada.
-            </p>
-            <Button onClick={() => navigate('/')} className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-full">
-              Volver a buscar
-            </Button>
-          </Card>
-        </div>
-      </div>
+    // Mapeo unificado para la inyección de la cabina de asientos del paso posterior
+    // Capitalizamos la inicial del string ('economy' -> 'Economy') para que haga match con PassengerInfo.tsx
+    const classMapping: Record<string, 'First' | 'Business' | 'Economy'> = {
+      first: 'First',
+      business: 'Business',
+      economy: 'Economy',
+    };
+    const formattedClass = classMapping[flight.class] || 'Economy';
+
+    sessionStorage.setItem(
+      'selectedFlight',
+      JSON.stringify({
+        flight,
+        passengersCount: parseInt(passengers),
+        bookingType: 'flight',
+        selectedClass: formattedClass,
+        tripType,
+        departureDate,
+      })
     );
-  }
+
+    navigate('/passenger-info', {
+      state: {
+        flight,
+        passengersCount: parseInt(passengers),
+        bookingType: 'flight',
+        selectedClass: formattedClass,
+        tripType,
+        departureDate,
+      },
+    });
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4">
-        {/* Header */}
+        {/* Header de Búsqueda */}
         <div className="mb-6">
           <h1 className="text-3xl font-bold mb-2 text-gray-900">Vuelos disponibles</h1>
           <div className="flex items-center gap-2 text-gray-600">
-            {from && to ? (
+            {from && to && !isShowingFallback ? (
               <>
                 <span>{fromCity}</span>
                 <ArrowRight className="h-4 w-4" />
                 <span>{toCity}</span>
               </>
             ) : (
-              <span>Todas las rutas disponibles</span>
+              <span>Todas las rutas operadas por AEROTURS</span>
             )}
             {departureDate && (
               <>
                 <span className="ml-4">•</span>
                 <Calendar className="h-4 w-4 ml-4" />
-                <span>{new Date(departureDate).toLocaleDateString('es-ES', { 
-                  weekday: 'long', 
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric' 
-                })}</span>
+                <span>
+                  {new Date(departureDate).toLocaleDateString('es-ES', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
+                </span>
               </>
             )}
             <span className="ml-4">•</span>
-            <span className="ml-4">{passengers} {parseInt(passengers) === 1 ? 'pasajero' : 'pasajeros'}</span>
+            <span className="ml-4">
+              {passengers} {parseInt(passengers) === 1 ? 'pasajero' : 'pasajeros'}
+            </span>
           </div>
         </div>
 
-        {/* Filters */}
+        {/* Notificación Dinámica de Vuelos Generales */}
+        {isShowingFallback && (
+          <div className="mb-6 flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+            <AlertCircle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
+            <div>
+              <strong>Aviso de disponibilidad:</strong> No encontramos vuelos directos programados de{' '}
+              <span className="font-bold">{fromCity}</span> a <span className="font-bold">{toCity}</span> para la fecha seleccionada. Para ayudarte a planificar tu viaje, te mostramos todas las rutas alternativas disponibles actualmente.
+            </div>
+          </div>
+        )}
+
+        {/* Filtros e Indicadores */}
         <div className="bg-white rounded-xl shadow p-4 mb-6">
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <span className="text-sm text-gray-600">
@@ -118,7 +157,7 @@ export function FlightResults() {
             </span>
             <div className="flex flex-wrap gap-2">
               <Badge variant="secondary" className="bg-blue-100 text-blue-700">
-                Clase: {selectedClassDetails.label}
+                Clase predeterminada: {selectedClassDetails.label}
               </Badge>
               <Badge variant="secondary" className="bg-emerald-100 text-emerald-700">
                 {selectedClassDetails.priceNote}
@@ -140,11 +179,11 @@ export function FlightResults() {
           </div>
         )}
 
-        {/* Flight List */}
+        {/* Lista de Vuelos Renderizados */}
         <div className="space-y-4">
           {availableFlights.map((flight) => (
             <Card key={flight.id} className="p-6 hover:shadow-xl transition-shadow bg-white rounded-xl border border-gray-200">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
                 <div className="flex-1">
                   <div className="flex items-center gap-4 mb-4">
                     <div className="bg-gradient-to-br from-blue-600 to-blue-700 p-3 rounded-xl shadow">
@@ -152,7 +191,9 @@ export function FlightResults() {
                     </div>
                     <div>
                       <p className="font-bold text-lg">{flight.airline}</p>
-                      <p className="text-sm text-gray-600">{flight.flightNumber}</p>
+                      <p className="text-sm text-gray-600">
+                        {flight.flightNumber} • <span className="font-semibold text-blue-600">{flight.origin} ➔ {flight.destination}</span>
+                      </p>
                     </div>
                   </div>
 
@@ -181,20 +222,20 @@ export function FlightResults() {
                     </div>
                   </div>
 
-                  <div className="mt-4 flex items-center gap-4">
+                  <div className="mt-4 flex flex-wrap gap-2">
                     <Badge variant="outline" className="border-blue-600 text-blue-700">
                       {flight.availableSeats} asientos disponibles
                     </Badge>
                     <Badge variant="secondary" className="bg-blue-100 text-blue-700">
-                      {flightClassDetails[flight.class].label}
+                      {flightClassDetails[flight.class]?.label || flight.class}
                     </Badge>
                     <Badge variant="secondary" className="bg-emerald-100 text-emerald-700">
-                      {flightClassDetails[flight.class].priceNote}
+                      {flightClassDetails[flight.class]?.priceNote || ''}
                     </Badge>
                   </div>
                 </div>
 
-                <div className="ml-8 text-right border-l pl-8">
+                <div className="lg:ml-8 text-right border-t pt-4 lg:border-t-0 lg:pt-0 lg:border-l lg:pl-8 min-w-[180px]">
                   <p className="text-sm text-gray-600 mb-1">Desde</p>
                   <p className="text-3xl font-bold text-blue-600 mb-1">
                     {formatPrice(flight.price)}
@@ -202,7 +243,7 @@ export function FlightResults() {
                   <p className="text-xs text-gray-500 mb-4">por persona</p>
                   <Button
                     onClick={() => handleSelectFlight(flight)}
-                    className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-lg rounded-full"
+                    className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-lg rounded-full font-bold"
                   >
                     Seleccionar
                   </Button>
@@ -215,11 +256,10 @@ export function FlightResults() {
           ))}
         </div>
 
-        {/* Info */}
+        {/* Footer Informativo */}
         <div className="mt-8 bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl p-6 text-white">
           <p className="text-sm">
-            <strong>Nota:</strong> Los precios mostrados incluyen tasas e impuestos. 
-            El equipaje de mano está incluido, el equipaje facturado puede tener coste adicional.
+            <strong>Nota:</strong> Los precios mostrados incluyen tasas e impuestos. El equipaje de mano está incluido, el equipaje facturado puede tener coste adicional.
           </p>
         </div>
       </div>

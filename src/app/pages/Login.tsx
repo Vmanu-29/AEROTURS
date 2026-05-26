@@ -28,7 +28,13 @@ export function Login() {
       return;
     }
 
-    navigate(from, { replace: true });
+    // REDIRECCIÓN INTELIGENTE POR ROL
+    // Si el id_rol es 1 redirige al panel de administración, de lo contrario a la ruta original o inicio
+    if (user.id_rol === 1) {
+      navigate('/admin', { replace: true });
+    } else {
+      navigate(from, { replace: true });
+    }
   };
 
   return (
@@ -171,12 +177,11 @@ export function Login() {
                 </div>
               </div>
 
-              <p className="text-center text-sm text-slate-600">
-                Usuario demo:{' '}
-                <span className="font-bold text-slate-900">cliente@aeroturs.com</span>
-                {' / '}
-                <span className="font-bold text-slate-900">cliente123</span>
-              </p>
+              <div className="mb-6 rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs text-slate-600">
+                <p className="font-semibold text-slate-700 mb-1">Cuentas de prueba:</p>
+                <p>🔹 <span className="font-bold">Admin:</span> admin@aeroturs.com / admin123</p>
+                <p>🔹 <span className="font-bold">Cliente:</span> cliente@aeroturs.com / cliente123</p>
+              </div>
 
               <div className="mt-8 rounded-2xl border border-blue-100 bg-blue-50 p-5 text-center">
                 <p className="text-sm font-semibold text-slate-900">
