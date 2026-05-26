@@ -1,6 +1,6 @@
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { CalendarClock, CheckCircle2, ClipboardList, Plane, Plus, Save, Search, XCircle } from 'lucide-react';
+import { CalendarClock, CheckCircle2, ClipboardList, Plane, Plus, Save, Search, XCircle, Armchair } from 'lucide-react';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
@@ -77,6 +77,7 @@ export function AdminDashboard() {
       booking.flight?.flightNumber,
       booking.flight?.origin,
       booking.flight?.destination,
+      booking.passengers?.map(p => p.seat).join(' '), // Permite buscar reservas filtrando por número de asiento
     ].some((value) => String(value || '').toLowerCase().includes(term));
   });
 
@@ -138,14 +139,26 @@ export function AdminDashboard() {
     }
 
     const reference = `AD${Math.random().toString(36).substring(2, 9).toUpperCase()}`;
-    const passengers = Array.from({ length: passengerCount }, (_, index) => ({
-      firstName: index === 0 ? customer.nombre.split(' ')[0] || 'Cliente' : `Pasajero ${index + 1}`,
-      lastName: index === 0 ? customer.nombre.split(' ').slice(1).join(' ') || 'AEROTURS' : 'AEROTURS',
-      email: customer.correo,
-      phone: '',
-      dateOfBirth: '',
-      documentNumber: ''
-    }));
+    
+    // Lista de letras de asientos para autogenerar en la creación express del admin
+    const seatLetters = ['A', 'B', 'C', 'D', 'E', 'F'];
+
+    const passengers = Array.from({ length: passengerCount }, (_, index) => {
+      // Generación automática de asientos secuenciales en clase económica (fila 10 en adelante) para la gestión express del admin
+      const row = 10 + Math.floor(index / 6);
+      const letter = seatLetters[index % 6];
+      const generatedSeat = `${row}${letter}`;
+
+      return {
+        firstName: index === 0 ? customer.nombre.split(' ')[0] || 'Cliente' : `Pasajero ${index + 1}`,
+        lastName: index === 0 ? customer.nombre.split(' ').slice(1).join(' ') || 'AEROTURS' : 'AEROTURS',
+        email: customer.correo,
+        phone: '',
+        dateOfBirth: '',
+        documentNumber: '',
+        seat: generatedSeat // Se añade el asiento auto-generado
+      };
+    });
 
     const createdBooking: BookingRecord = {
       reference,
@@ -182,7 +195,7 @@ export function AdminDashboard() {
             <Input
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              placeholder="Buscar reserva, cliente o ruta"
+              placeholder="Buscar por ref, cliente, ruta o asiento"
               className="h-11 rounded-lg pl-10"
             />
           </div>
@@ -323,11 +336,26 @@ export function AdminDashboard() {
                     </div>
 
                     <div>
-                      <p className="text-sm text-slate-500">Pasajeros: {booking.passengers.length}</p>
-                      <p className="text-sm text-slate-500">
+                      <p className="text-sm font-medium text-slate-700">Pasajeros: {booking.passengers.length}</p>
+                      
+                      {/* NUEVA SECCIÓN: Muestra los asientos asignados a cada pasajero dentro de la reserva */}
+                      <div className="mt-1 flex flex-wrap gap-1.5">
+                        {booking.passengers.map((passenger, pIdx) => (
+                          <span 
+                            key={pIdx} 
+                            className="inline-flex items-center gap-1 bg-slate-100 border border-slate-200 text-slate-700 px-2 py-0.5 rounded text-xs font-semibold"
+                            title={`${passenger.firstName} ${passenger.lastName}`}
+                          >
+                            <Armchair className="h-3 w-3 text-blue-500" />
+                            {passenger.seat || 'N/A'}
+                          </span>
+                        ))}
+                      </div>
+
+                      <p className="text-xs text-slate-400 mt-1.5">
                         Fecha: {new Date(booking.bookingDate).toLocaleDateString('es-ES')}
                       </p>
-                      <p className="text-lg font-bold text-blue-600">{formatPrice(booking.totalPrice)}</p>
+                      <p className="text-lg font-bold text-blue-600 mt-0.5">{formatPrice(booking.totalPrice)}</p>
                     </div>
 
                     <div className="grid gap-2 sm:grid-cols-3 lg:w-96">
